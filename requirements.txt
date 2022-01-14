@@ -1,0 +1,8 @@
+black
+isort
+mypy
+flake8
+pytest
+fastapi
+gunicorn
+uvicorn
