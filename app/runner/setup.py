@@ -11,8 +11,7 @@ def setup() -> FastAPI:
 
     app.include_router(wallet_api)
     app.state.core = WalletService.create(
-        UserInMemoryRepository(),
-        InMemoryWalletRepository(),
+        UserInMemoryRepository(), InMemoryWalletRepository()
     )
 
     return app
