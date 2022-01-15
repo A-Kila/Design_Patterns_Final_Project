@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from typing import Optional, Protocol
 
+from app.core.interfaces.users_interface import IUserRepository
 from app.core.transactions.transactions_interactor import (
     ITransactionRepository,
     IWalletRepository,
     TransactionInteractor,
 )
-from app.core.users.users_interactor import IUserRepository, UsersInteractor
+from app.core.users.users_interactor import UsersInteractor
 
 
 @dataclass
@@ -26,11 +26,6 @@ class TransactionRequest:
 class TransactionResponse:
     status_code: int
     msg: str
-
-
-class IGetUserRepository(Protocol):
-    def get_user_id(self, api_key: str) -> Optional[int]:
-        pass
 
 
 @dataclass

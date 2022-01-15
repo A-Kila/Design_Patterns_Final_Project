@@ -1,37 +1,20 @@
 from dataclasses import dataclass, field
-from typing import Protocol, List
 
-from app.core.facade import IGetUserRepository
+from app.core.interfaces.transitions_interface import ITransactionRepository
+from app.core.interfaces.users_interface import IUserRepository
+from app.core.interfaces.wallets_interface import IWalletRepository
 from app.core.transactions.tax_calculator import (
     DifferentUserTax,
     FreeTax,
     TaxCalculator,
 )
-from app.infra.in_memory.transactions_repository import Transaction, Statistics
 
-
-class IWalletRepository(Protocol):
-    def make_transaction(self, from_wallet: str, to_wallet: str, amount: float) -> None:
-        pass
-
-    def does_wallet_exist(self, wallet: str) -> bool:
-        pass
-
-    def is_my_wallet(self, user_id: int, wallet_address: str) -> bool:
-        pass
-
-
-class ITransactionRepository(Protocol):
-    def store_transaction(
-        self, user_id: int, from_wallet: str, to_wallet: str, amount: float, profit: float
-    ) -> None:
-        pass
 
 @dataclass
 class TransactionInteractor:
     wallet_repo: IWalletRepository
     transaction_repo: ITransactionRepository
-    user_repo: IGetUserRepository
+    user_repo: IUserRepository
     tax_calculator: TaxCalculator = field(default_factory=TaxCalculator)
 
     def make_transaction(
@@ -41,7 +24,7 @@ class TransactionInteractor:
 
         if not self.wallet_repo.is_my_wallet(
             user_id, wallet_from
-        ) or not self.wallet_repo.does_wallet_exist(wallet_to):
+        ) or not self.wallet_repo.wallet_exists(wallet_to):
             return False
 
         if self.wallet_repo.is_my_wallet(user_id, wallet_to):
