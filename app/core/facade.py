@@ -5,6 +5,8 @@ from app.core.transactions.transactions_interactor import (
     ITransactionRepository,
     IWalletRepository,
     TransactionInteractor,
+    TransactionRequest,
+    TransactionResponse,
 )
 from app.core.users.users_interactor import IUserRepository, UsersInteractor
 
@@ -12,20 +14,6 @@ from app.core.users.users_interactor import IUserRepository, UsersInteractor
 @dataclass
 class UsersResponse:
     api_key: str
-
-
-@dataclass
-class TransactionRequest:
-    api_key: str
-    wallet_from: str
-    wallet_to: str
-    amount: float
-
-
-@dataclass
-class TransactionResponse:
-    status_code: int
-    msg: str
 
 
 class IGetUserRepository(Protocol):
@@ -44,15 +32,7 @@ class WalletService:
         return UsersResponse(api_key)
 
     def make_transaction(self, request: TransactionRequest) -> TransactionResponse:
-        if self.transaction_interactor.make_transaction(
-            request.api_key, request.wallet_from, request.wallet_to, request.amount
-        ):
-            return TransactionResponse(200, "")
-
-        return TransactionResponse(
-            400,
-            "Wallet does not exist or the user does not have permission to acces it",
-        )
+        return self.transaction_interactor.make_transaction(request)
 
     @classmethod
     def create(
