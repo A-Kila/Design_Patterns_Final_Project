@@ -22,11 +22,8 @@ class IWalletRepository(Protocol):
 
 class ITransactionRepository(Protocol):
     def store_transaction(
-        self, from_wallet: str, to_wallet: str, amount: float
+        self, user_id: int, from_wallet: str, to_wallet: str, amount: float, profit: float
     ) -> None:
-        pass
-
-    def add_profit(self, amount: float) -> None:
         pass
 
 
@@ -55,9 +52,8 @@ class TransactionInteractor:
         tax = self.tax_calculator.get_tax(amount)
         amount_transfered = self.tax_calculator.get_money_transfered(amount)
 
-        self.transaction_repo.add_profit(tax)
         self.transaction_repo.store_transaction(
-            wallet_from, wallet_to, amount_transfered
+            user_id, wallet_from, wallet_to, amount_transfered, tax
         )
 
         return True
