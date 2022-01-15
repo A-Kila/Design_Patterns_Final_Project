@@ -50,6 +50,10 @@ class WalletsInteractor:
     def create_wallet(self, request: WalletPostRequest) -> WalletResponse:
         user_id: int = 1  # TODO change use api_key
         number_of_wallets: int = self.wallet_repo.get_wallet_count(user_id=user_id)
+
+        if number_of_wallets >= self.MAX_WALLET_COUNT:
+            raise Exception(f"user has already had {self.MAX_WALLET_COUNT} wallets")
+
         wallet_address: str = f"{user_id}_{number_of_wallets + 1}"
         balance = self.INITIAL_WALLET_BALANCE
 
