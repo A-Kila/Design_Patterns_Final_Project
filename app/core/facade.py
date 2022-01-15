@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 
 from app.core.users.users_interactor import IUserRepository, UsersInteractor
-from app.core.wallets.wallet_generator import (
+from app.core.wallets.wallets_interactor import (
+    IWalletRepository,
     WalletGetRequest,
-    WalletGetResponse,
     WalletPostRequest,
-    WalletPostResponse,
+    WalletResponse,
+    WalletsInteractor,
 )
-from app.core.wallets.wallets_interactor import IWalletRepository, WalletsInteractor
 from app.infra.rateapi.coingecko import CoinGeckoApi
 
 
@@ -26,10 +26,10 @@ class WalletService:
 
         return UsersResponse(api_key)
 
-    def get_wallet(self, request: WalletGetRequest) -> WalletGetResponse:
+    def get_wallet(self, request: WalletGetRequest) -> WalletResponse:
         return self.wallet_interactor.get_wallet(request)
 
-    def create_wallet(self, request: WalletPostRequest) -> WalletPostResponse:
+    def create_wallet(self, request: WalletPostRequest) -> WalletResponse:
         return self.wallet_interactor.create_wallet(request=request)
 
     @classmethod

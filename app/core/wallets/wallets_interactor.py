@@ -1,13 +1,25 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Protocol
 
-from app.core.wallets.wallet_generator import (
-    WalletGetRequest,
-    WalletGetResponse,
-    WalletPostRequest,
-    WalletPostResponse,
-)
 from app.infra.rateapi.coingecko import CoinGeckoApi
+
+
+@dataclass
+class WalletGetRequest:
+    api_key: str
+    wallet_address: str
+
+
+@dataclass
+class WalletPostRequest:
+    api_key: str
+
+
+@dataclass
+class WalletResponse:
+    balance_btc: float
+    balance_usd: float
+    wallet_address: str
 
 
 class IRateApi(Protocol):
@@ -34,7 +46,7 @@ class WalletsInteractor:
 
     INITIAL_WALLET_BALANCE: int = 100000000
 
-    def create_wallet(self, request: WalletPostRequest) -> WalletPostResponse:
+    def create_wallet(self, request: WalletPostRequest) -> WalletResponse:
         user_id: int = 1  # TODO change use api_key
         number_of_wallets: int = self.wallet_repo.get_wallet_amount(user_id=user_id)
         wallet_address: str = f"{user_id}{number_of_wallets + 1}"
@@ -49,7 +61,7 @@ class WalletsInteractor:
         balance_btc = self.sats_to_btc(wallet_balance_sats=balance)
         balance_usd = self.btc_to_usd(wallet_balance_btc=balance_btc)
 
-        return WalletPostResponse(
+        return WalletResponse(
             balance_btc=balance_btc,
             balance_usd=balance_usd,
             wallet_address=wallet_address,
@@ -63,7 +75,7 @@ class WalletsInteractor:
         usd_to_btc: float = self.rate_getter.get_rate("usd")
         return wallet_balance_btc * usd_to_btc
 
-    def get_wallet(self, request: WalletGetRequest) -> WalletGetResponse:
+    def get_wallet(self, request: WalletGetRequest) -> WalletResponse:
         address: str = request.wallet_address
         wallet_balance_sats: float = self.wallet_repo.get_balance(
             request.wallet_address
@@ -72,7 +84,7 @@ class WalletsInteractor:
         wallet_balance_btc: float = self.sats_to_btc(wallet_balance_sats)
         wallet_balance_usd: float = self.btc_to_usd(wallet_balance_btc)
 
-        return WalletGetResponse(
+        return WalletResponse(
             wallet_address=address,
             balance_usd=wallet_balance_usd,
             balance_btc=wallet_balance_btc,
