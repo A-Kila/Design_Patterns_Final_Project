@@ -1,7 +1,11 @@
 from dataclasses import dataclass, field
 from typing import Protocol
 
-from app.core.wallets.wallet_generator import WalletGetRequest, WalletGetResponse
+from app.core.wallets.wallet_generator import (
+    WalletGetRequest,
+    WalletGetResponse,
+    WalletPostResponse,
+)
 from app.infra.rateapi.coingecko import CoinGeckoApi
 
 
@@ -28,3 +32,21 @@ class WalletsInteractor:
     rate_getter: CoinGeckoApi = field(default_factory=CoinGeckoApi())
 
     INITIAL_WALLET_BALANCE: int = 100000000
+
+    def create_wallet(self, api_key: str) -> WalletPostResponse:
+        user_id: int = 1  # TODO change use api_key
+        number_of_wallets: int = self.wallet_repo.get_wallet_amount(user_id=user_id)
+        wallet_address: str = f"{user_id}{number_of_wallets + 1}"
+        balance = self.INITIAL_WALLET_BALANCE
+
+        self.wallet_repo.create_wallet(
+            user_id=user_id,
+            wallet_address=wallet_address,
+            balance=balance,
+        )
+
+        balance_usd = 1  # TODO change
+
+        return WalletPostResponse(
+            balance_btc=balance, balance_usd=1, wallet_address=wallet_address
+        )

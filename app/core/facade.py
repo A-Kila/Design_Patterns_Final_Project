@@ -20,6 +20,10 @@ class WalletService:
 
         return UsersResponse(api_key)
 
+    def create_wallet(self, request: WalletPostRequest) -> WalletPostResponse:
+        api_key: str = request.api_key
+        return self.wallet_interactor.create_wallet(api_key=api_key)
+
     @classmethod
     def create(
         cls, user_repo: IUserRepository, wallet_repo: IWalletRepository
