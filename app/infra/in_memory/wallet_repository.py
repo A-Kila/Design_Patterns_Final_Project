@@ -3,7 +3,6 @@ from dataclasses import dataclass, field
 
 @dataclass
 class InMemoryWalletRepository:
-
     wallets: dict[str, float] = field(default_factory=dict[str, float])
     number_of_wallets: dict[int, int] = field(default_factory=dict[int, int])
     wallets_for_user: dict[int, list[str]] = field(default_factory=dict[int, list[str]])
@@ -34,12 +33,12 @@ class InMemoryWalletRepository:
 
         return wallet_address in wallet_list
 
-    def make_transaction(self, from_wallet: str, to_wallet: str, amount: float):
+    def make_transaction(self, from_wallet: str, to_wallet: str, amount: float) -> None:
         self.take_money(from_wallet, amount)
         self.give_money(to_wallet, amount)
 
-    def take_money(self, from_wallet: str, amount: float):
+    def take_money(self, from_wallet: str, amount: float) -> None:
         self.wallets[from_wallet] -= amount
 
-    def give_money(self, to_wallet: str, amount: float):
+    def give_money(self, to_wallet: str, amount: float) -> None:
         self.wallets[to_wallet] += amount

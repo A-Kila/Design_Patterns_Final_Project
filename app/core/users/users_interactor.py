@@ -1,25 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Protocol
 
-from app.core.users.user_generator import User, UserGenerator
+from app.core.interfaces.users_interface import IUserGenerator, IUserRepository
+from app.core.users.user_generator import UserGenerator
 
 
 @dataclass
 class UsersResponse:
     api_key: str
-
-
-class IUserGenerator(Protocol):
-    def generate_new_user(self) -> User:
-        pass
-
-
-class IUserRepository(Protocol):
-    def store_user(self, api_key: str) -> None:
-        pass
-
-    def get_user_id(self, api_key: str) -> int:
-        pass
 
 
 @dataclass

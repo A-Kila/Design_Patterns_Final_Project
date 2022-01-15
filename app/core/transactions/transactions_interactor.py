@@ -1,13 +1,13 @@
 from dataclasses import dataclass, field
-from typing import Protocol, List
 
-from app.core.facade import IGetUserRepository
+from app.core.interfaces.transitions_interface import ITransactionRepository
+from app.core.interfaces.users_interface import IUserRepository
+from app.core.interfaces.wallets_interface import IWalletRepository
 from app.core.transactions.tax_calculator import (
     DifferentUserTax,
     FreeTax,
     TaxCalculator,
 )
-from app.infra.in_memory.transactions_repository import Transaction, Statistics
 
 SUCCESS_CODE = 200
 PERMISSION_DENIED = 400
@@ -28,41 +28,19 @@ class TransactionResponse:
     msg: str
 
 
-class IWalletRepository(Protocol):
-    def make_transaction(self, from_wallet: str, to_wallet: str, amount: float) -> None:
-        pass
-
-    def does_wallet_exist(self, wallet: str) -> bool:
-        pass
-
-    def is_my_wallet(self, user_id: int, wallet_address: str) -> bool:
-        pass
-
-
-class ITransactionRepository(Protocol):
-    def store_transaction(
-        self,
-        user_id: int,
-        from_wallet: str,
-        to_wallet: str,
-        amount: float,
-        profit: float,
-    ) -> None:
-        pass
-
 @dataclass
 class TransactionInteractor:
     wallet_repo: IWalletRepository
     transaction_repo: ITransactionRepository
-    user_repo: IGetUserRepository
+    user_repo: IUserRepository
     tax_calculator: TaxCalculator = field(default_factory=TaxCalculator)
 
     def make_transaction(self, request: TransactionRequest) -> TransactionResponse:
         user_id = self.user_repo.get_user_id(request.api_key)
 
-        if self.wallet_repo.does_wallet_exist(
+        if self.wallet_repo.wallet_exists(
             request.wallet_from
-        ) or not self.wallet_repo.does_wallet_exist(request.wallet_to):
+        ) or not self.wallet_repo.wallet_exists(request.wallet_to):
             return TransactionResponse(
                 status_code=WALLET_DOES_NOT_EXIST,
                 msg="One of the wallets you passed does not exist",
