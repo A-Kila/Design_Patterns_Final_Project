@@ -38,7 +38,7 @@ class TransactionInteractor:
     def make_transaction(self, request: TransactionRequest) -> TransactionResponse:
         user_id = self.user_repo.get_user_id(request.api_key)
 
-        if self.wallet_repo.wallet_exists(
+        if not self.wallet_repo.wallet_exists(
             request.wallet_from
         ) or not self.wallet_repo.wallet_exists(request.wallet_to):
             return TransactionResponse(
@@ -49,7 +49,7 @@ class TransactionInteractor:
         if not self.wallet_repo.is_my_wallet(user_id, request.wallet_from):
             return TransactionResponse(
                 status_code=PERMISSION_DENIED,
-                msg="The wallet you are depositing from does not exist",
+                msg="The wallet you are depositing from does belong to you",
             )
 
         if self.wallet_repo.is_my_wallet(user_id, request.wallet_to):
