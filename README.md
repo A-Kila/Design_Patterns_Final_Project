@@ -4,7 +4,7 @@
 
 The aim of the project is to create an HTTP API for the "Bitcoin Wallet" application.
 
-Worry not, we will not do any blockchain operations. Instead, we will use SQLite for persistence. However, I hope (fingers crossed) at this point you have enough knowledge to create a solution that one can (relatively) easily extend to use Postgres/MySQL or even the real blockchain.
+Worry not, we will not do any blockchain operations. Instead, we will use SQLite for persistence. However, (fingers crossed) at this point you have enough knowledge to create a solution that one can (relatively) easily extend to use Postgres/MySQL or even the real blockchain.
 
 Concurrency is also out of scope. You do not have to solve the so-called "double spending" issue, but you are very much encouraged to think about how you would tackle it.
 
@@ -36,6 +36,7 @@ Concurrency is also out of scope. You do not have to solve the so-called "double
   - Returns list of transactions
 
 `GET /wallets/{address}/transactions`
+  - Requires API key
   - returns transactions related to the wallet
 
 `GET /statistics`
@@ -46,7 +47,7 @@ Concurrency is also out of scope. You do not have to solve the so-called "double
   
 - Python 3.9
 - [FastAPI](https://fastapi.tiangolo.com/) as a web framework
-- [SQLite](https://docs.python.org/3/library/sqlite3.html)) for persistence
+- [SQLite](https://docs.python.org/3/library/sqlite3.html) for persistence
 - Use publicaly available API of your choice for BTC -> USD conversion
 - Decide the structure of the requests and responses yourselves
 - Implement only API endpoints (UI is out of scope)
