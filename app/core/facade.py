@@ -8,26 +8,7 @@ from app.core.transactions.transactions_interactor import (
     TransactionRequest,
     TransactionResponse,
 )
-from app.core.users.users_interactor import UsersInteractor
-
-
-@dataclass
-class UsersResponse:
-    api_key: str
-
-
-@dataclass
-class TransactionRequest:
-    api_key: str
-    wallet_from: str
-    wallet_to: str
-    amount: float
-
-
-@dataclass
-class TransactionResponse:
-    status_code: int
-    msg: str
+from app.core.users.users_interactor import UsersInteractor, UsersResponse
 
 
 @dataclass

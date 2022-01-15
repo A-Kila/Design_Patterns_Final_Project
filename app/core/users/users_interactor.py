@@ -5,6 +5,11 @@ from app.core.users.user_generator import UserGenerator
 
 
 @dataclass
+class UsersResponse:
+    api_key: str
+
+
+@dataclass
 class UsersInteractor:
     user_repo: IUserRepository
     user_generator: IUserGenerator = field(default_factory=UserGenerator)

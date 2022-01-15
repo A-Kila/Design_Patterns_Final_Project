@@ -38,9 +38,9 @@ class TransactionInteractor:
     def make_transaction(self, request: TransactionRequest) -> TransactionResponse:
         user_id = self.user_repo.get_user_id(request.api_key)
 
-        if self.wallet_repo.does_wallet_exist(
+        if self.wallet_repo.wallet_exists(
             request.wallet_from
-        ) or not self.wallet_repo.does_wallet_exist(request.wallet_to):
+        ) or not self.wallet_repo.wallet_exists(request.wallet_to):
             return TransactionResponse(
                 status_code=WALLET_DOES_NOT_EXIST,
                 msg="One of the wallets you passed does not exist",
