@@ -23,10 +23,7 @@ class InMemoryWalletRepository:
         return self.wallets.get(wallet_address, -1)
 
     def wallet_exists(self, wallet_address: str) -> bool:
-        if wallet_address in self.wallets:
-            return True
-
-        return False
+        return wallet_address in self.wallets
 
     def is_my_wallet(self, user_id: int, wallet_address: str) -> bool:
         wallet_list: list[str] = self.wallets_for_user.get(user_id, [])

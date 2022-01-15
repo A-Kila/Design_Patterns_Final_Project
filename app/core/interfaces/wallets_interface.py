@@ -1,4 +1,7 @@
-class IWalletRepository:
+from typing import Protocol
+
+
+class IWalletRepository(Protocol):
     def create_wallet(self, user_id: int, wallet_address: str, balance: float) -> None:
         pass
 
