@@ -8,12 +8,7 @@ from app.core.transactions.transactions_interactor import (
     TransactionRequest,
     TransactionResponse,
 )
-from app.core.users.users_interactor import IUserRepository, UsersInteractor
-
-
-@dataclass
-class UsersResponse:
-    api_key: str
+from app.core.users.users_interactor import IUserRepository, UsersInteractor, UsersResponse
 
 
 class IGetUserRepository(Protocol):
@@ -27,9 +22,7 @@ class WalletService:
     transaction_interactor: TransactionInteractor
 
     def register_user(self) -> UsersResponse:
-        api_key = self.user_interactor.generate_new_api_key()
-
-        return UsersResponse(api_key)
+        return self.user_interactor.generate_new_api_key()
 
     def make_transaction(self, request: TransactionRequest) -> TransactionResponse:
         return self.transaction_interactor.make_transaction(request)
