@@ -27,8 +27,10 @@ def test_user_repository_store_get_user(repo: IUserRepository):
 
 def test_user_repository_store_get_with_more_input(repo: IUserRepository):
     for i in range(1000):
-        repo.store_user("apy_key" + i)
-        assert repo.get_user_id("apy_key" + i) is int
+        api_key: str = "apy_key" + str(i)
+        repo.store_user(api_key)
+        assert repo.get_user_id(api_key) == i
+
 
 
 
