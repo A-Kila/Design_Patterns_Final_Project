@@ -32,24 +32,24 @@ def test_user_repository_store_get_with_more_input(user_repo: IUserRepository):
         assert user_repo.get_user_id(api_key) == i
 
 
-def test_wallet_repository_create_wallet(wallet_repo: IUserRepository):
-    pass
-
-
-def test_wallet_repository_get_wallet_amount(wallet_repo: IUserRepository):
-    pass
-
-
-def test_wallet_repository_balance():
-    pass
-
-
-def test_wallet_repository_is_my_wallet():
-    pass
-
-
-def test_wallet_repository_make_transaction():
-    pass
+# def test_wallet_repository_create_wallet(wallet_repo: IUserRepository):
+#     pass
+#
+#
+# def test_wallet_repository_get_wallet_amount(wallet_repo: IUserRepository):
+#     pass
+#
+#
+# def test_wallet_repository_balance():
+#     pass
+#
+#
+# def test_wallet_repository_is_my_wallet():
+#     pass
+#
+#
+# def test_wallet_repository_make_transaction():
+#     pass
 
 
 
