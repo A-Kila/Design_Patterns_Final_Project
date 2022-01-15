@@ -14,15 +14,24 @@ def user_repo() -> IUserRepository:
 # def wallet_repo() -> IWalletRepository: # need interface
 #     return InMemoryWalletRepository()
 
+
 def test_user_repository_store_get_user(user_repo: IUserRepository):
     user_repo.store_user("0imfnc8mVLWwsAawjYr4Rx")
     user_repo.store_user("1imfnc8mVLWwsAawjYr4Rx")
-    assert user_repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx") == user_repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx")
-    assert user_repo.get_user_id("1imfnc8mVLWwsAawjYr4Rx") != user_repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx")
+    assert user_repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx") == user_repo.get_user_id(
+        "0imfnc8mVLWwsAawjYr4Rx"
+    )
+    assert user_repo.get_user_id("1imfnc8mVLWwsAawjYr4Rx") != user_repo.get_user_id(
+        "0imfnc8mVLWwsAawjYr4Rx"
+    )
     user_repo.store_user("3imfnc8mVLWwsAawjYr4Rx")
     user_repo.store_user("4imfnc8mVLWwsAawjYr4Rx")
-    assert user_repo.get_user_id("3imfnc8mVLWwsAawjYr4Rx") == user_repo.get_user_id("3imfnc8mVLWwsAawjYr4Rx")
-    assert user_repo.get_user_id("4imfnc8mVLWwsAawjYr4Rx") != user_repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx")
+    assert user_repo.get_user_id("3imfnc8mVLWwsAawjYr4Rx") == user_repo.get_user_id(
+        "3imfnc8mVLWwsAawjYr4Rx"
+    )
+    assert user_repo.get_user_id("4imfnc8mVLWwsAawjYr4Rx") != user_repo.get_user_id(
+        "0imfnc8mVLWwsAawjYr4Rx"
+    )
 
 
 def test_user_repository_store_get_with_more_input(user_repo: IUserRepository):
@@ -50,6 +59,3 @@ def test_user_repository_store_get_with_more_input(user_repo: IUserRepository):
 #
 # def test_wallet_repository_make_transaction():
 #     pass
-
-
-
