@@ -13,6 +13,9 @@ class IUserRepository(Protocol):
     def store_user(self, api_key: str) -> None:
         pass
 
+    def get_user_id(self, api_key: str) -> int:
+        pass
+
 
 @dataclass
 class UsersInteractor:
