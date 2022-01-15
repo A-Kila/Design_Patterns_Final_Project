@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import Protocol
 
-from app.infra.rateapi.coingecko import CoinGeckoApi
 from app.core.interfaces.wallets_interface import IWalletRepository
+from app.infra.rateapi.coingecko import CoinGeckoApi
 
 
 @dataclass
