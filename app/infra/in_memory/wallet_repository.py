@@ -10,7 +10,7 @@ class InMemoryWalletRepository:
 
     def create_wallet(self, user_id: int, wallet_address: str, balance: float) -> None:
         self.wallets[wallet_address] = balance
-        self.wallets_for_user[user_id].append(wallet_address)
+        self.wallets_for_user.get(user_id).append(wallet_address)
 
         if user_id in self.number_of_wallets:
             self.number_of_wallets[user_id] = 1
@@ -18,13 +18,13 @@ class InMemoryWalletRepository:
             self.number_of_wallets[user_id] += 1
 
     def get_wallet_amount(self, user_id: int) -> int:
-        return self.number_of_wallets[user_id]
+        return self.number_of_wallets.get(user_id)
 
     def get_balance(self, wallet_address: str) -> float:
-        return self.wallets[wallet_address]
+        return self.wallets.get(wallet_address)
 
     def is_my_wallet(self, user_id: int, wallet_address: str) -> bool:
-        wallet_list: list[str] = self.wallets_for_user[user_id]
+        wallet_list: list[str] = self.wallets_for_user.get(user_id)
 
         for address in wallet_list:
             if address == wallet_address:
