@@ -42,7 +42,7 @@ class TransactionRepositoryInMemory:
                 trans_for_user.append(transaction)
         return trans_for_user
 
-    def get_wallet_transations(self, wallet_address: str) -> List[Transaction]:
+    def get_wallet_transactions(self, wallet_address: str) -> List[Transaction]:
         trans_for_wallet: List[Transaction] = []
         for transaction in self.repo:
             if transaction.to_wallet == wallet_address or transaction.from_wallet == wallet_address:
