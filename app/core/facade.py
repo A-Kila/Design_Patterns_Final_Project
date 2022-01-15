@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
 from app.core.users.users_interactor import IUserRepository, UsersInteractor
-from app.core.wallets.wallets_interactor import WalletsInteractor
+from app.core.wallets.wallet_generator import WalletPostRequest, WalletPostResponse
+from app.core.wallets.wallets_interactor import IWalletRepository, WalletsInteractor
 
 
 @dataclass
@@ -20,5 +21,7 @@ class WalletService:
         return UsersResponse(api_key)
 
     @classmethod
-    def create(cls, user_repo: IUserRepository) -> "WalletService":
-        return cls(UsersInteractor(user_repo), WalletsInteractor())
+    def create(
+        cls, user_repo: IUserRepository, wallet_repo: IWalletRepository
+    ) -> "WalletService":
+        return cls(UsersInteractor(user_repo), WalletsInteractor(wallet_repo))
