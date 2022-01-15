@@ -1,7 +1,14 @@
 from fastapi import APIRouter
+from starlette.requests import Request
 
+from app.core.facade import WalletService
 
 wallet_api: APIRouter = APIRouter()
+
+
+def get_core(request: Request) -> WalletService:
+    service: WalletService = request.app.state.core
+    return service
 
 
 @wallet_api.post("/users")
