@@ -86,6 +86,9 @@ class WalletsInteractor:
             request.wallet_address
         )
 
+        if wallet_balance_sats == -1:
+            raise Exception("Incorrect Wallet address")
+
         wallet_balance_btc: float = self.sats_to_btc(wallet_balance_sats)
         wallet_balance_usd: float = self.btc_to_usd(wallet_balance_btc)
 
