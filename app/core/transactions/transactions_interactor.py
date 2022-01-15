@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Protocol
+from typing import Protocol, List
 
 from app.core.facade import IGetUserRepository
 from app.core.transactions.tax_calculator import (
@@ -7,6 +7,7 @@ from app.core.transactions.tax_calculator import (
     FreeTax,
     TaxCalculator,
 )
+from app.infra.in_memory.transactions_repository import Transaction, Statistics
 
 
 class IWalletRepository(Protocol):
@@ -22,13 +23,18 @@ class IWalletRepository(Protocol):
 
 class ITransactionRepository(Protocol):
     def store_transaction(
-        self, from_wallet: str, to_wallet: str, amount: float
+        self, user_id: int, from_wallet: str, to_wallet: str, amount: float, profit: float
     ) -> None:
         pass
 
-    def add_profit(self, amount: float) -> None:
+    def get_transactions(self, user_id) -> List[Transaction]:
         pass
 
+    def get_wallet_transations(self, wallet_address: str) -> List[Transaction]:
+        pass
+
+    def get_statistics(self) -> Statistics:
+        pass
 
 @dataclass
 class TransactionInteractor:
@@ -55,9 +61,8 @@ class TransactionInteractor:
         tax = self.tax_calculator.get_tax(amount)
         amount_transfered = self.tax_calculator.get_money_transfered(amount)
 
-        self.transaction_repo.add_profit(tax)
         self.transaction_repo.store_transaction(
-            wallet_from, wallet_to, amount_transfered
+            user_id, wallet_from, wallet_to, amount_transfered, tax
         )
 
         return True
