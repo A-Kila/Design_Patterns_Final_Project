@@ -30,8 +30,7 @@ class WalletService:
         return self.wallet_interactor.get_wallet(request)
 
     def create_wallet(self, request: WalletPostRequest) -> WalletPostResponse:
-        api_key: str = request.api_key
-        return self.wallet_interactor.create_wallet(api_key=api_key)
+        return self.wallet_interactor.create_wallet(request=request)
 
     @classmethod
     def create(

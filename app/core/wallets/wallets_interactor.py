@@ -4,6 +4,7 @@ from typing import Protocol
 from app.core.wallets.wallet_generator import (
     WalletGetRequest,
     WalletGetResponse,
+    WalletPostRequest,
     WalletPostResponse,
 )
 from app.infra.rateapi.coingecko import CoinGeckoApi
@@ -33,7 +34,7 @@ class WalletsInteractor:
 
     INITIAL_WALLET_BALANCE: int = 100000000
 
-    def create_wallet(self, api_key: str) -> WalletPostResponse:
+    def create_wallet(self, request: WalletPostRequest) -> WalletPostResponse:
         user_id: int = 1  # TODO change use api_key
         number_of_wallets: int = self.wallet_repo.get_wallet_amount(user_id=user_id)
         wallet_address: str = f"{user_id}{number_of_wallets + 1}"
@@ -45,10 +46,13 @@ class WalletsInteractor:
             balance=balance,
         )
 
-        balance_usd = 1  # TODO change
+        balance_btc = self.sats_to_btc(wallet_balance_sats=balance)
+        balance_usd = self.btc_to_usd(wallet_balance_btc=balance_btc)
 
         return WalletPostResponse(
-            balance_btc=balance, balance_usd=1, wallet_address=wallet_address
+            balance_btc=balance_btc,
+            balance_usd=balance_usd,
+            wallet_address=wallet_address,
         )
 
     def sats_to_btc(self, wallet_balance_sats: float) -> float:
