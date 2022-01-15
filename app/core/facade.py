@@ -13,6 +13,6 @@ class WalletService:
     user_interactor: UsersInteractor
 
     def register_user(self) -> UsersResponse:
-        api_key = self.user_interactor()
+        api_key = self.user_interactor.generate_new_api_key()
 
         return UsersResponse(api_key)
