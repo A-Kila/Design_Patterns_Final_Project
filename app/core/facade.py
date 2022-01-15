@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
-from app.core.users.users_interactor import UsersInteractor
-from app.infra.in_memory.user_in_memory import UserInMemoryRepository
+from app.core.users.users_interactor import IUserRepository, UsersInteractor
 
 
 @dataclass
@@ -19,5 +18,5 @@ class WalletService:
         return UsersResponse(api_key)
 
     @classmethod
-    def create(cls, user_repo: UserInMemoryRepository) -> "WalletService":
+    def create(cls, user_repo: IUserRepository) -> "WalletService":
         return cls(UsersInteractor(user_repo))
