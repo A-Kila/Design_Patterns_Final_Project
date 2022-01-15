@@ -2,7 +2,7 @@ class IWalletRepository:
     def create_wallet(self, user_id: int, wallet_address: str, balance: float) -> None:
         pass
 
-    def get_wallet_amount(self, user_id: int) -> int:
+    def get_wallet_count(self, user_id: int) -> int:
         pass
 
     def get_balance(self, wallet_address: str) -> float:

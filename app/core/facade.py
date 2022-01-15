@@ -1,16 +1,15 @@
 from dataclasses import dataclass
 
 from app.core.interfaces.users_interface import IUserRepository
+from app.core.interfaces.wallets_interface import IWalletRepository
+from app.core.interfaces.transitions_interface import ITransactionRepository
 from app.core.transactions.transactions_interactor import (
-    ITransactionRepository,
-    IWalletRepository,
     TransactionInteractor,
     TransactionRequest,
     TransactionResponse,
 )
 from app.core.users.users_interactor import UsersInteractor, UsersResponse
 from app.core.wallets.wallets_interactor import (
-    IWalletRepository,
     WalletGetRequest,
     WalletPostRequest,
     WalletResponse,
