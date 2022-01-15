@@ -14,25 +14,21 @@ def repo() -> IUserRepository:
     return UserInMemoryRepository()
 
 
-@pytest.fixture()
-def setup(self, repo: IUserRepository):
-    self.repo = self.repo
-
-
-# test_in_memory_user_repository
-def test_user_repository_store_user(repo: IUserRepository):
+def test_user_repository_store_get_user(repo: IUserRepository):
     repo.store_user("0imfnc8mVLWwsAawjYr4Rx")
     repo.store_user("1imfnc8mVLWwsAawjYr4Rx")
-    repo.store_user("2imfnc8mVLWwsAawjYr4Rx")
-    repo.store_user("3imfnc8mVLWwsAawjYr4Rx")
-
-
-def test_user_repository_get_user(repo: IUserRepository):
-    repo.store_user("0imfnc8mVLWwsAawjYr4Rx")
-    repo.store_user("1imfnc8mVLWwsAawjYr4Rx")
-    repo.store_user("2imfnc8mVLWwsAawjYr4Rx")
-    repo.store_user("3imfnc8mVLWwsAawjYr4Rx")
+    assert repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx") == repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx")
     assert repo.get_user_id("1imfnc8mVLWwsAawjYr4Rx") != repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx")
+    repo.store_user("3imfnc8mVLWwsAawjYr4Rx")
+    repo.store_user("4imfnc8mVLWwsAawjYr4Rx")
+    assert repo.get_user_id("3imfnc8mVLWwsAawjYr4Rx") == repo.get_user_id("3imfnc8mVLWwsAawjYr4Rx")
+    assert repo.get_user_id("4imfnc8mVLWwsAawjYr4Rx") != repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx")
+
+
+def test_user_repository_store_get_with_more_input(repo: IUserRepository):
+    for i in range(1000):
+        repo.store_user("apy_key" + i)
+        assert repo.get_user_id("apy_key" + i) is int
 
 
 
