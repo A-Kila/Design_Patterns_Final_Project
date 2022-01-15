@@ -27,15 +27,6 @@ class ITransactionRepository(Protocol):
     ) -> None:
         pass
 
-    def get_transactions(self, user_id) -> List[Transaction]:
-        pass
-
-    def get_wallet_transations(self, wallet_address: str) -> List[Transaction]:
-        pass
-
-    def get_statistics(self) -> Statistics:
-        pass
-
 @dataclass
 class TransactionInteractor:
     wallet_repo: IWalletRepository
