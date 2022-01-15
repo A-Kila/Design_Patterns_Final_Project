@@ -44,7 +44,7 @@ def get_transactions(api_key: str, core: WalletService = Depends(get_core)) -> s
 
 
 @wallet_api.get("/wallet/{address}/transactions")
-def get_wallet_transations(
+def get_wallet_transactions(
     api_key: str, core: WalletService = Depends(get_core)
 ) -> str:
     pass

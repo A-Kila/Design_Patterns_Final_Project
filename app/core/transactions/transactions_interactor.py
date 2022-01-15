@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Protocol
+from typing import Protocol, List
 
 from app.core.facade import IGetUserRepository
 from app.core.transactions.tax_calculator import (
@@ -7,6 +7,7 @@ from app.core.transactions.tax_calculator import (
     FreeTax,
     TaxCalculator,
 )
+from app.infra.in_memory.transactions_repository import Transaction, Statistics
 
 
 class IWalletRepository(Protocol):
@@ -25,7 +26,6 @@ class ITransactionRepository(Protocol):
         self, user_id: int, from_wallet: str, to_wallet: str, amount: float, profit: float
     ) -> None:
         pass
-
 
 @dataclass
 class TransactionInteractor:
