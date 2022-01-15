@@ -1,7 +1,12 @@
 from fastapi import APIRouter, Depends
 from starlette.requests import Request
 
-from app.core.facade import UsersResponse, WalletService
+from app.core.facade import (
+    UsersResponse,
+    WalletGetRequest,
+    WalletGetResponse,
+    WalletService,
+)
 
 wallet_api: APIRouter = APIRouter()
 
@@ -22,8 +27,10 @@ def create_wallet(api_key: str, core: WalletService = Depends(get_core)) -> str:
 
 
 @wallet_api.get("/wallet/{address}")
-def get_wallet(api_key: str, core: WalletService = Depends(get_core)) -> str:
-    pass
+def get_wallet(
+    api_key: str, address: str, core: WalletService = Depends(get_core)
+) -> WalletGetResponse:
+    return core.get_wallet(WalletGetRequest(api_key, address))
 
 
 @wallet_api.post("/transaction")
