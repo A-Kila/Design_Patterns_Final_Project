@@ -1,4 +1,8 @@
+from dataclasses import field
 from typing import Protocol
+
+from app.core.wallets.wallet_generator import WalletGetRequest, WalletGetResponse
+from app.infra.rateapi.coingecko import CoinGeckoApi
 
 
 class IRateApi(Protocol):
@@ -18,4 +22,6 @@ class IWalletRepository(Protocol):
 
 
 class WalletsInteractor:
+
     wallet_repo: IWalletRepository
+    rate_getter: CoinGeckoApi = field(default_factory=CoinGeckoApi())
