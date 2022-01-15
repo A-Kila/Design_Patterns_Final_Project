@@ -9,7 +9,7 @@ class IUserGenerator:
 
 
 class IUserRepository:
-    def store_user(self, user: str, api_key: str) -> None:
+    def store_user(self, api_key: str) -> None:
         pass
 
 
@@ -20,6 +20,6 @@ class UsersInteractor:
 
     def generate_new_api_key(self) -> str:
         user = self.user_generator.generate_new_user()
-        self.user_repo.store_user(user.user_id, user.api_key)
+        self.user_repo.store_user(user.api_key)
 
         return str(user.api_key)
