@@ -1,11 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
 class InMemoryWalletRepository:
 
-    wallets: dict[str:float]
-    number_of_wallets: dict[int:int]
+    wallets: dict[str:float] = field(default_factory=dict[str, float])
+    number_of_wallets: dict[int:int] = field(default_factory=dict[int, int])
 
     def create_wallet(self, user_id: int, wallet_address: str, balance: float) -> None:
         self.wallets[wallet_address] = balance

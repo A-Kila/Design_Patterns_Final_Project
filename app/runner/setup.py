@@ -9,8 +9,6 @@ def setup() -> FastAPI:
     app = FastAPI()
 
     app.include_router(wallet_api)
-    app.state.core = WalletService.create(
-        UserInMemoryRepository()
-    )
+    app.state.core = WalletService.create(UserInMemoryRepository())
 
     return app
