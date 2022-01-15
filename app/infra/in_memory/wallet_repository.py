@@ -17,7 +17,7 @@ class InMemoryWalletRepository:
         else:
             self.number_of_wallets[user_id] = 1
 
-    def get_wallet_amount(self, user_id: int) -> int:
+    def get_wallet_count(self, user_id: int) -> int:
         return self.number_of_wallets.get(user_id, 0)
 
     def get_balance(self, wallet_address: str) -> float:
