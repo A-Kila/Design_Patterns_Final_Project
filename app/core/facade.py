@@ -45,6 +45,10 @@ class WalletService:
     ) -> "WalletService":
         return cls(
             UsersInteractor(user_repo),
-            WalletsInteractor(wallet_repo, CoinGeckoApi()),
+            WalletsInteractor(
+                user_repo=user_repo,
+                wallet_repo=wallet_repo,
+                rate_getter=CoinGeckoApi(),
+            ),
             TransactionInteractor(wallet_repo, transaction_repo, user_repo),
         )

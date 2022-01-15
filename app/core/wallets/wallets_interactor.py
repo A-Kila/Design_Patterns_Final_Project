@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Protocol
 
+from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IWalletRepository
 from app.infra.rateapi.coingecko import CoinGeckoApi
 
@@ -30,7 +31,7 @@ class IRateApi(Protocol):
 
 @dataclass
 class WalletsInteractor:
-
+    user_repo: IUserRepository
     wallet_repo: IWalletRepository
     rate_getter: CoinGeckoApi
 
@@ -38,7 +39,8 @@ class WalletsInteractor:
     MAX_WALLET_COUNT: int = 3
 
     def create_wallet(self, request: WalletPostRequest) -> WalletResponse:
-        user_id: int = 1  # TODO change use api_key
+        api_key: str = request.api_key
+        user_id: int = self.user_repo.get_user_id(api_key=api_key)
         number_of_wallets: int = self.wallet_repo.get_wallet_count(user_id=user_id)
 
         if number_of_wallets >= self.MAX_WALLET_COUNT:
