@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from secrets import token_urlsafe
 
-
 API_KEY_LENGHT = 32
 
 
