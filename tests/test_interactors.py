@@ -9,9 +9,10 @@ from app.infra.in_memory.wallet_repository import InMemoryWalletRepository
 def users_interactor() -> UsersInteractor:
     return UsersInteractor(user_repo=UserInMemoryRepository())
 
-@pytest.fixture()
-def wallet_interactor() -> UsersInteractor:
-    return UsersInteractor(user_repo=InMemoryWalletRepository())
+
+# @pytest.fixture()
+# def wallet_interactor() -> WalletInteractor:
+#     return UsersInteractor(wallet_repo=InMemoryWalletRepository())
 
 
 def test_users_interactor_generate_new_api_key(users_interactor: UsersInteractor):
@@ -26,5 +27,6 @@ def test_users_interactor_generate_new_api_key_multiple_calls(users_interactor: 
         second_user = users_interactor.generate_new_api_key()
         assert first_user != second_user
 
-
+# def test_wallet_interactorget_rate(wallet_interactor: WalletInteractor):
+#     pass
 

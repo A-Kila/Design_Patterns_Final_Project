@@ -10,13 +10,9 @@ def user_repo() -> IUserRepository:
     return UserInMemoryRepository()
 
 
-class IWalletRepository:
-    pass
-
-
-@pytest.fixture()
-def wallet_repo() -> IWalletRepository: # need interface
-    return InMemoryWalletRepository()
+# @pytest.fixture()
+# def wallet_repo() -> IWalletRepository: # need interface
+#     return InMemoryWalletRepository()
 
 def test_user_repository_store_get_user(user_repo: IUserRepository):
     user_repo.store_user("0imfnc8mVLWwsAawjYr4Rx")
