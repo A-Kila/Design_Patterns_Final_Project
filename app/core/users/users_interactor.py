@@ -1,6 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
-from app.core.users.user_generator import User
+from app.core.users.user_generator import User, UserGenerator
 
 
 class IUserGenerator:
@@ -16,7 +16,7 @@ class IUserRepository:
 @dataclass
 class UsersInteractor:
     user_repo: IUserRepository
-    user_generator: IUserGenerator
+    user_generator: IUserGenerator = field(default_factory=UserGenerator)
 
     def generate_new_api_key(self) -> str:
         user = self.user_generator.generate_new_user()

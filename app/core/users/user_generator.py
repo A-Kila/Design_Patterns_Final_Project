@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from secrets import token_urlsafe
 
 
-API_KEY_LENGHT = 32
+API_KEY_LENGTH = 32
 
 
 @dataclass
@@ -12,7 +12,7 @@ class User:
 
 class UserGenerator:
     def __init__(self) -> None:
-        self.api_key_length = API_KEY_LENGHT
+        self.api_key_length = API_KEY_LENGTH
 
     def generate_new_user(self) -> User:
         api_key = token_urlsafe(self.api_key_length)
