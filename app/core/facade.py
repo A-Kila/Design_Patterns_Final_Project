@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from app.core.users.users_interactor import IUserRepository, UsersInteractor
+from app.core.wallets.wallets_interactor import WalletsInteractor
 
 
 @dataclass
@@ -11,6 +12,7 @@ class UsersResponse:
 @dataclass
 class WalletService:
     user_interactor: UsersInteractor
+    wallet_interactor: WalletsInteractor
 
     def register_user(self) -> UsersResponse:
         api_key = self.user_interactor.generate_new_api_key()
@@ -19,4 +21,4 @@ class WalletService:
 
     @classmethod
     def create(cls, user_repo: IUserRepository) -> "WalletService":
-        return cls(UsersInteractor(user_repo))
+        return cls(UsersInteractor(user_repo), WalletsInteractor())
