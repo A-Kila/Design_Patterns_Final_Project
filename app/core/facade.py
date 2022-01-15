@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from app.core.users.users_interactor import UsersInteractor
 
 from app.infra.in_memory.user_in_memory import UserInMemoryRepository
