@@ -17,12 +17,20 @@ def repo() -> IUserRepository:
 def test_user_repository_store_get_user(repo: IUserRepository):
     repo.store_user("0imfnc8mVLWwsAawjYr4Rx")
     repo.store_user("1imfnc8mVLWwsAawjYr4Rx")
-    assert repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx") == repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx")
-    assert repo.get_user_id("1imfnc8mVLWwsAawjYr4Rx") != repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx")
+    assert repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx") == repo.get_user_id(
+        "0imfnc8mVLWwsAawjYr4Rx"
+    )
+    assert repo.get_user_id("1imfnc8mVLWwsAawjYr4Rx") != repo.get_user_id(
+        "0imfnc8mVLWwsAawjYr4Rx"
+    )
     repo.store_user("3imfnc8mVLWwsAawjYr4Rx")
     repo.store_user("4imfnc8mVLWwsAawjYr4Rx")
-    assert repo.get_user_id("3imfnc8mVLWwsAawjYr4Rx") == repo.get_user_id("3imfnc8mVLWwsAawjYr4Rx")
-    assert repo.get_user_id("4imfnc8mVLWwsAawjYr4Rx") != repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx")
+    assert repo.get_user_id("3imfnc8mVLWwsAawjYr4Rx") == repo.get_user_id(
+        "3imfnc8mVLWwsAawjYr4Rx"
+    )
+    assert repo.get_user_id("4imfnc8mVLWwsAawjYr4Rx") != repo.get_user_id(
+        "0imfnc8mVLWwsAawjYr4Rx"
+    )
 
 
 def test_user_repository_store_get_with_more_input(repo: IUserRepository):
@@ -30,8 +38,3 @@ def test_user_repository_store_get_with_more_input(repo: IUserRepository):
         api_key: str = "apy_key" + str(i)
         repo.store_user(api_key)
         assert repo.get_user_id(api_key) == i
-
-
-
-
-
