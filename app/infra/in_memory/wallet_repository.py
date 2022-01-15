@@ -9,7 +9,10 @@ class InMemoryWalletRepository:
 
     def create_wallet(self, user_id: int, wallet_address: str, balance: float) -> None:
         self.wallets[wallet_address] = balance
-        self.wallets_for_user.get(user_id, []).append(wallet_address)
+
+        if user_id not in self.wallets_for_user:
+            self.wallets_for_user[user_id] = []
+        self.wallets_for_user[user_id].append(wallet_address)
 
         if user_id in self.number_of_wallets:
             self.number_of_wallets[user_id] += 1
