@@ -1,4 +1,4 @@
-from dataclasses import field
+from dataclasses import dataclass, field
 from typing import Protocol
 
 from app.core.wallets.wallet_generator import WalletGetRequest, WalletGetResponse
@@ -21,7 +21,10 @@ class IWalletRepository(Protocol):
         pass
 
 
+@dataclass
 class WalletsInteractor:
 
     wallet_repo: IWalletRepository
     rate_getter: CoinGeckoApi = field(default_factory=CoinGeckoApi())
+
+    INITIAL_WALLET_BALANCE: int = 100000000
