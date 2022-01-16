@@ -1,6 +1,7 @@
 import pytest
 
 from app.core.wallets.wallets_interactor import (
+    WalletGetRequest,
     WalletPostRequest,
     WalletResponse,
     WalletsInteractor,
@@ -70,3 +71,15 @@ def test_create_several_wallet_limit_fail(wallet_interactor: WalletsInteractor):
     request_4 = WalletPostRequest(api_key="key_4")
     with pytest.raises(Exception):
         wallet_interactor.create_wallet(request=request_4)
+
+
+def test_get_wallet_success(wallet_interactor: WalletsInteractor):
+    request_create = WalletPostRequest(api_key="key_1")
+    wallet: WalletResponse = wallet_interactor.create_wallet(request=request_create)
+
+    request = WalletGetRequest(api_key="key_1", wallet_address=wallet.wallet_address)
+    response: WalletResponse = wallet_interactor.get_wallet(request=request)
+
+    assert response.wallet_address == wallet.wallet_address
+    assert response.balance_btc == wallet.balance_btc
+    assert response.balance_usd == wallet.balance_usd
