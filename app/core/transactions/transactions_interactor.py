@@ -9,10 +9,6 @@ from app.core.transactions.tax_calculator import (
     TaxCalculator,
 )
 
-SUCCESS_CODE = 200
-PERMISSION_DENIED = 400
-WALLET_DOES_NOT_EXIST = 404
-
 
 @dataclass
 class TransactionRequest:
@@ -23,35 +19,29 @@ class TransactionRequest:
 
 
 @dataclass
-class TransactionResponse:
-    status_code: int
-    msg: str
-
-
-@dataclass
 class TransactionInteractor:
     wallet_repo: IWalletRepository
     transaction_repo: ITransactionRepository
     user_repo: IUserRepository
     tax_calculator: TaxCalculator = field(default_factory=TaxCalculator)
 
-    def make_transaction(self, request: TransactionRequest) -> TransactionResponse:
+    def make_transaction(self, request: TransactionRequest) -> None:
         user_id = self.user_repo.get_user_id(request.api_key)
 
         if not self.wallet_repo.wallet_exists(
             request.wallet_from
         ) or not self.wallet_repo.wallet_exists(request.wallet_to):
-            return TransactionResponse(
-                status_code=WALLET_DOES_NOT_EXIST,
-                msg="One of the wallets you passed does not exist",
-            )
+            raise Exception("One of the wallets you passed does not exist")
 
         if not self.wallet_repo.is_my_wallet(user_id, request.wallet_from):
-            return TransactionResponse(
-                status_code=PERMISSION_DENIED,
-                msg="The wallet you are depositing from does belong to you",
-            )
+            raise Exception("The user does not have permission to transfer from wallet")
 
+        if self.wallet_repo.get_balance(request.wallet_from) < request.amount:
+            raise Exception("Not enough money on wallet")
+
+        self.__transfer_money(user_id, request)
+
+    def __transfer_money(self, user_id: int, request: TransactionRequest) -> None:
         if self.wallet_repo.is_my_wallet(user_id, request.wallet_to):
             self.tax_calculator.tax = FreeTax()
         else:
@@ -63,5 +53,3 @@ class TransactionInteractor:
         self.transaction_repo.store_transaction(
             user_id, request.wallet_from, request.wallet_to, amount_transfered, tax
         )
-
-        return TransactionResponse(SUCCESS_CODE, "")
