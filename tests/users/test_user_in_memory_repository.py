@@ -14,7 +14,7 @@ def user_repo() -> IUserRepository:
     return UserInMemoryRepository()
 
 
-def test_user_repository_store_get_user(user_repo: IUserRepository):
+def test_user_repository_store_get_user(user_repo: IUserRepository) -> None:
     user_repo.store_user("0imfnc8mVLWwsAawjYr4Rx")
     user_repo.store_user("1imfnc8mVLWwsAawjYr4Rx")
     assert user_repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx") == user_repo.get_user_id(
@@ -35,7 +35,7 @@ def test_user_repository_store_get_user(user_repo: IUserRepository):
 
 def test_user_repository_store_get_with_more_input(
     starting_user_id: int, user_repo: IUserRepository
-):
+) -> None:
     for i in range(1000):
         api_key: str = "apy_key" + str(i)
         user_repo.store_user(api_key)

@@ -1,4 +1,3 @@
-import os.path
 import sqlite3
 from sqlite3 import Connection
 
@@ -6,7 +5,6 @@ import definitions
 
 
 class Database:
-
     products_connection: Connection
 
     def __init__(self, database_name: str):
