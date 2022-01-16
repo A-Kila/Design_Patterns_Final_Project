@@ -49,5 +49,5 @@ def test_transaction_repository_get_statistics(
     transaction_repo.store_transaction(1, "11", "13", 100, 0)
     transaction_repo.store_transaction(1, "11", "01", 85, 15)
     transaction_repo.store_transaction(0, "01", "21", 85, 15)
-    stat: Statistics = transaction_repo.get_statistics()
+    stat = transaction_repo.get_statistics()
     assert stat.total_transactions == 6 and stat.total_profit == 60
