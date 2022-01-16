@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends
 from starlette.requests import Request
 
-from app.core.facade import (
-    TransactionRequest,
-    UsersResponse,
-    WalletService,
+from app.core.facade import CreateTransactionRequest, UsersResponse, WalletService
+from app.core.transactions.transactions_interactor import (
+    GetTransactionsResponse,
+    GetUserTransactionsRequest,
+    WalletTransactionsRequest,
 )
 from app.core.transactions.statistics_interactor import StatisticsGetResponse, StatisticsGetRequest
 from app.core.wallets.wallets_interactor import (
@@ -42,21 +43,23 @@ def get_wallet(
 
 @wallet_api.post("/transaction")
 def perform_transaction(
-    request: TransactionRequest, core: WalletService = Depends(get_core)
+    request: CreateTransactionRequest, core: WalletService = Depends(get_core)
 ) -> None:
     core.make_transaction(request)
 
 
 @wallet_api.get("/transactions")
-def get_transactions(api_key: str, core: WalletService = Depends(get_core)) -> str:
-    pass
+def get_transactions(
+    api_key: str, core: WalletService = Depends(get_core)
+) -> GetTransactionsResponse:
+    return core.get_transactions(GetUserTransactionsRequest(api_key))
 
 
 @wallet_api.get("/wallet/{address}/transactions")
 def get_wallet_transactions(
-    api_key: str, core: WalletService = Depends(get_core)
-) -> str:
-    pass
+    api_key: str, address: str, core: WalletService = Depends(get_core)
+) -> GetTransactionsResponse:
+    return core.get_wallet_transactions(WalletTransactionsRequest(api_key, address))
 
 
 @wallet_api.get("/statistics")

@@ -9,8 +9,11 @@ from app.core.transactions.statistics_interactor import (
     StatisticsGetResponse,
 )
 from app.core.transactions.transactions_interactor import (
+    CreateTransactionRequest,
+    GetTransactionsResponse,
+    GetUserTransactionsRequest,
     TransactionInteractor,
-    TransactionRequest,
+    WalletTransactionsRequest,
 )
 from app.core.users.users_interactor import UsersInteractor, UsersResponse
 from app.core.wallets.wallets_interactor import (
@@ -32,7 +35,7 @@ class WalletService:
     def register_user(self) -> UsersResponse:
         return self.user_interactor.generate_new_api_key()
 
-    def make_transaction(self, request: TransactionRequest) -> None:
+    def make_transaction(self, request: CreateTransactionRequest) -> None:
         self.transaction_interactor.make_transaction(request)
 
     def get_wallet(self, request: WalletGetRequest) -> WalletResponse:
@@ -41,7 +44,15 @@ class WalletService:
     def create_wallet(self, request: WalletPostRequest) -> WalletResponse:
         return self.wallet_interactor.create_wallet(request=request)
 
-    def get_statistics(self, request: StatisticsGetRequest) -> StatisticsGetResponse: # error handling
+    def get_transactions(
+        self, request: GetUserTransactionsRequest
+    ) -> GetTransactionsResponse:
+        return self.transaction_interactor.get_transactions(request)
+
+    def get_wallet_transactions(self, request: WalletTransactionsRequest):
+        return self.transaction_interactor.get_wallet_transactions(request=request)
+
+    def get_statistics(self, request: StatisticsGetRequest) -> StatisticsGetResponse:
         return self.statistics_interactor.get_statistics(request)
 
     @classmethod
