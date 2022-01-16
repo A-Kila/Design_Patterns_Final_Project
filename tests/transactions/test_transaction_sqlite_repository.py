@@ -95,10 +95,17 @@ def test_transactions(
         transaction4.profit,
     )
 
-    assert transaction_repo.get_transactions(user1) == [transaction1, transaction3, transaction4]
+    assert transaction_repo.get_transactions(user1) == [
+        transaction1,
+        transaction3,
+        transaction4,
+    ]
     assert transaction_repo.get_transactions(user2) == [transaction2]
 
-    assert transaction_repo.get_wallet_transactions(WALLET_ADRESS1) == [transaction1, transaction3]
+    assert transaction_repo.get_wallet_transactions(WALLET_ADRESS1) == [
+        transaction1,
+        transaction3,
+    ]
     assert transaction_repo.get_wallet_transactions(WALLET_ADRESS2) == [transaction4]
     assert transaction_repo.get_wallet_transactions(WALLET_ADRESS3) == [transaction2]
     assert transaction_repo.get_wallet_transactions("Not a rea wallet") == []
