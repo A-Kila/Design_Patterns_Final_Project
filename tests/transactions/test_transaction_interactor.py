@@ -107,3 +107,33 @@ def test_make_transaction_with_invalid_wallet(
 
     with pytest.raises(Exception):
         transaction_interactor.make_transaction(request=request_2)
+
+
+def test_make_transaction_with_other_user(
+    transaction_interactor: TransactionInteractor,
+):
+    users_interactor: UsersInteractor = UsersInteractor(
+        user_repo=transaction_interactor.user_repo
+    )
+    wallet_interactor: WalletsInteractor = WalletsInteractor(
+        user_repo=transaction_interactor.user_repo,
+        wallet_repo=transaction_interactor.wallet_repo,
+        rate_getter=CoinGeckoApi(),
+    )
+
+    user_1: UsersResponse = users_interactor.generate_new_api_key()
+    user_2: UsersResponse = users_interactor.generate_new_api_key()
+
+    request_wallet = WalletPostRequest(api_key=user_1.api_key)
+    wallet_1: WalletResponse = wallet_interactor.create_wallet(request=request_wallet)
+    wallet_2: WalletResponse = wallet_interactor.create_wallet(request=request_wallet)
+
+    request: CreateTransactionRequest = CreateTransactionRequest(
+        api_key=user_2.api_key,
+        wallet_to=wallet_1.wallet_address,
+        wallet_from=wallet_2.wallet_address,
+        amount=100,
+    )
+
+    with pytest.raises(Exception):
+        transaction_interactor.make_transaction(request=request)
