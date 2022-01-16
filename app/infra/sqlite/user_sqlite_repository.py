@@ -10,15 +10,7 @@ class UserSqliteRepository:
     database: Database
 
     def __post_init__(self) -> None:
-        con: Connection = self.database.get_connection()
-        cur: Cursor = con.cursor()
-
-        cur.execute("""
-            create table if not EXISTS users
-            (id integer PRIMARY key AUTOINCREMENT, api_key text UNIQUE)
-        """)
-
-        con.commit()
+        self.__create_table()
 
     def store_user(self, api_key: str) -> None:
         con: Connection = self.database.get_connection()
@@ -38,3 +30,23 @@ class UserSqliteRepository:
         con.commit()
 
         return user_id
+
+    def clear(self) -> None:
+        con: Connection = self.database.get_connection()
+        cur: Cursor = con.cursor()
+
+        cur.execute("DROP TABLE users")
+
+        con.commit()
+        self.__create_table()
+
+    def __create_table(self) -> None:
+        con: Connection = self.database.get_connection()
+        cur: Cursor = con.cursor()
+
+        cur.execute("""
+            create table if not EXISTS users
+            (id integer PRIMARY key AUTOINCREMENT, api_key text UNIQUE)
+        """)
+
+        con.commit()
