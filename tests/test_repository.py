@@ -1,5 +1,4 @@
 import pytest
-import transaction as transaction
 
 from app.core.interfaces.transitions_interface import ITransactionRepository, Statistics
 from app.core.interfaces.wallets_interface import IWalletRepository
@@ -7,6 +6,7 @@ from app.core.users.users_interactor import IUserRepository
 from app.infra.in_memory.transactions_repository import TransactionRepositoryInMemory
 from app.infra.in_memory.user_in_memory import UserInMemoryRepository
 from app.infra.in_memory.wallet_repository import InMemoryWalletRepository
+
 
 @pytest.fixture()
 def starting_user_id() -> int:
