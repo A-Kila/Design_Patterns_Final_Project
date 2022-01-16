@@ -23,5 +23,7 @@ class StatisticsInteractor:
         if request.admin_api_key != self.ADMIN_API_KEY:
             raise Exception("you are not the admin")
         stats: Statistics = self.transaction_repo.get_statistics()
-        return StatisticsGetResponse(number_of_transactions=stats.total_transactions,
-                                     platform_profit=stats.total_profit)
+        return StatisticsGetResponse(
+            number_of_transactions=stats.total_transactions,
+            platform_profit=stats.total_profit,
+        )

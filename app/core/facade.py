@@ -4,9 +4,9 @@ from app.core.interfaces.transitions_interface import ITransactionRepository
 from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IWalletRepository
 from app.core.transactions.statistics_interactor import (
-    StatisticsInteractor,
     StatisticsGetRequest,
     StatisticsGetResponse,
+    StatisticsInteractor,
 )
 from app.core.transactions.transactions_interactor import (
     CreateTransactionRequest,
@@ -70,5 +70,5 @@ class WalletService:
                 rate_getter=CoinGeckoApi(),
             ),
             TransactionInteractor(wallet_repo, transaction_repo, user_repo),
-            StatisticsInteractor(transaction_repo=transaction_repo)
+            StatisticsInteractor(transaction_repo=transaction_repo),
         )
