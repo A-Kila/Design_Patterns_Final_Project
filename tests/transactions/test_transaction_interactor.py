@@ -7,6 +7,7 @@ from app.core.transactions.transactions_interactor import (
     GetTransactionsResponse,
     GetUserTransactionsRequest,
     TransactionInteractor,
+    WalletTransactionsRequest,
 )
 from app.core.users.users_interactor import UsersInteractor, UsersResponse
 from app.core.wallets.wallets_interactor import (
@@ -137,3 +138,20 @@ def test_make_transaction_with_other_user(
 
     with pytest.raises(Exception):
         transaction_interactor.make_transaction(request=request)
+
+
+def test_get_transactions_with_invalid_wallet(
+    transaction_interactor: TransactionInteractor,
+):
+    users_interactor: UsersInteractor = UsersInteractor(
+        user_repo=transaction_interactor.user_repo
+    )
+
+    user: UsersResponse = users_interactor.generate_new_api_key()
+    api_key: str = user.api_key
+
+    request = WalletTransactionsRequest(
+        api_key=api_key, wallet_address="Invalid_wallet"
+    )
+    with pytest.raises(Exception):
+        transaction_interactor.get_wallet_transactions(request=request)
