@@ -15,7 +15,7 @@ class WalletSqliteRepository:
         connection.execute(
             """CREATE TABLE IF NOT EXISTS wallets(
             user_id integer, 
-            wallet_address text UNIQUE, 
+            wallet_address text PRIMARY KEY, 
             balance real NOT NULL, 
             FOREIGN KEY(user_id) references users(id))
         """
