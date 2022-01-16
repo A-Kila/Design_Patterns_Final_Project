@@ -5,7 +5,6 @@ import definitions
 
 
 class Database:
-
     products_connection: Connection
 
     def __init__(self, database_name: str):
