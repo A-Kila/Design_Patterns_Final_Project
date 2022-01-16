@@ -63,13 +63,17 @@ class TransactionSqliteRepository:
         return self.__get_tranaction_list(transactions_info)
 
     def get_statistics(self) -> Statistics:
-        con: Connection = self.database.connection
+        con: Connection = self.database.get_connection()
         cur: Cursor = con.cursor()
 
         cur.execute("SELECT COUNT(user_id), SUM(profit)")
         total_transactions, total_profit = cur.fetchone()
 
         return Statistics(total_transactions, total_profit)
+
+    def clear(self) -> None:
+        con: Connection = self.database.get_connection()
+        con.execute("DROP TABLE transactions")
 
     def __get_tranaction_list(
         self, info: list[tuple[int, str, str, float, float]]
