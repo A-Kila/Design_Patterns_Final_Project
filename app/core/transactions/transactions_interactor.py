@@ -80,5 +80,16 @@ class TransactionInteractor:
             user_id, request.wallet_from, request.wallet_to, amount_transfered, tax
         )
 
-    def get_wallet_transactions(self, request: WalletTransactionsRequest):
-        pass
+    def get_wallet_transactions(
+        self, request: WalletTransactionsRequest
+    ) -> GetTransactionsResponse:
+        wallet_address: str = request.wallet_address
+
+        if not self.wallet_repo.wallet_exists(wallet_address=wallet_address):
+            raise Exception("Wallet do not exists")
+
+        transactions = self.transaction_repo.get_wallet_transactions(
+            wallet_address=wallet_address
+        )
+
+        return GetTransactionsResponse(transactions=transactions)
