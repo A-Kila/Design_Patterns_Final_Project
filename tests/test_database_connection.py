@@ -3,7 +3,7 @@ from sqlite3 import Connection, Cursor
 from app.infra.connection.database import Database
 
 
-def test_connection():
+def test_connection() -> None:
     database: Database = Database("test.db")
     connection: Connection = database.get_connection()
     cursor: Cursor = connection.cursor()

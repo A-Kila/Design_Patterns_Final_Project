@@ -49,7 +49,9 @@ class WalletService:
     ) -> GetTransactionsResponse:
         return self.transaction_interactor.get_transactions(request)
 
-    def get_wallet_transactions(self, request: WalletTransactionsRequest):
+    def get_wallet_transactions(
+        self, request: WalletTransactionsRequest
+    ) -> GetTransactionsResponse:
         return self.transaction_interactor.get_wallet_transactions(request=request)
 
     def get_statistics(self, request: StatisticsGetRequest) -> StatisticsGetResponse:

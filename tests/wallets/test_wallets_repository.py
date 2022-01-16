@@ -23,7 +23,7 @@ def user_repo() -> IUserRepository:
 
 def test_wallet_repository_create_wallet(
     starting_user_id: int, user_repo: IUserRepository, wallet_repo: IWalletRepository
-):
+) -> None:
     user_repo.store_user("user_0")
     user_id: int = starting_user_id
     wallet_repo.create_wallet(user_id, "0wallet1", 1.0)
@@ -32,7 +32,7 @@ def test_wallet_repository_create_wallet(
 
 def test_wallet_repository_get_wallet_amount(
     starting_user_id: int, user_repo: IUserRepository, wallet_repo: IWalletRepository
-):
+) -> None:
     user_repo.store_user("user_0")
     user_id: int = starting_user_id
     assert wallet_repo.get_wallet_count(user_id) == 0
@@ -49,7 +49,7 @@ def test_wallet_repository_get_wallet_amount(
 
 def test_wallet_repository_balance(
     starting_user_id: int, user_repo: IUserRepository, wallet_repo: IWalletRepository
-):
+) -> None:
     user_repo.store_user("user_0")
     user_id: int = starting_user_id
     wallet_repo.create_wallet(user_id, "0wallet1", 1.0)
@@ -63,7 +63,7 @@ def test_wallet_repository_wallet_exists(
     wallet_repo: IWalletRepository,
     user_repo: IUserRepository,
     starting_user_id: int,
-):
+) -> None:
     user_repo.store_user("user_0")
     user_id: int = starting_user_id
     wallet_repo.create_wallet(user_id, "0wallet1", 1.0)
@@ -78,7 +78,7 @@ def test_wallet_repository_is_my_wallet(
     wallet_repo: IWalletRepository,
     user_repo: IUserRepository,
     starting_user_id: int,
-):
+) -> None:
     user_id: int = starting_user_id
     user_repo.store_user("user_0")
     user_repo.store_user("user_1")
@@ -96,7 +96,7 @@ def test_wallet_repository_make_transaction(
     wallet_repo: IWalletRepository,
     user_repo: IUserRepository,
     starting_user_id: int,
-):
+) -> None:
     user_id: int = starting_user_id
     user_repo.store_user("user_0")
     user_repo.store_user("user_1")
@@ -118,7 +118,7 @@ def test_wallet_repository_take_money(
     wallet_repo: IWalletRepository,
     user_repo: IUserRepository,
     starting_user_id: int,
-):
+) -> None:
     user_id: int = starting_user_id
     user_repo.store_user("user_0")
     user_repo.store_user("user_1")
@@ -137,7 +137,7 @@ def test_wallet_repository_give_money(
     wallet_repo: IWalletRepository,
     user_repo: IUserRepository,
     starting_user_id: int,
-):
+) -> None:
     user_id: int = starting_user_id
     user_repo.store_user("user_0")
     user_repo.store_user("user_1")

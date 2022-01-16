@@ -10,6 +10,6 @@ class CoinGeckoApi:
         response = requests.get(self.RATE_URL)
         response_data = json.loads(response.content)
         rates = response_data.get("rates", {})
-        currency = rates.get(currency, {})
+        currency_rate = rates.get(currency, {})
 
-        return currency.get("value")
+        return float(currency_rate.get("value"))
