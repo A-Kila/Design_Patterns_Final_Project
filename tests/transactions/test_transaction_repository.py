@@ -11,7 +11,7 @@ def transaction_repo() -> ITransactionRepository:
 
 def test_transaction_repository_store_get_transaction(
     transaction_repo: ITransactionRepository,
-):
+) -> None:
     transaction_repo.store_transaction(0, "01", "11", 85, 15)
     transaction_repo.store_transaction(0, "01", "21", 85, 15)
     transaction_repo.store_transaction(0, "01", "31", 85, 15)
@@ -25,7 +25,7 @@ def test_transaction_repository_store_get_transaction(
 
 def test_transaction_repository_get_wallet_transactions(
     transaction_repo: ITransactionRepository,
-):
+) -> None:
     transaction_repo.store_transaction(0, "01", "11", 85, 15)
     transaction_repo.store_transaction(0, "01", "21", 85, 15)
     transaction_repo.store_transaction(0, "01", "31", 85, 15)
@@ -42,7 +42,7 @@ def test_transaction_repository_get_wallet_transactions(
 
 def test_transaction_repository_get_statistics(
     transaction_repo: ITransactionRepository,
-):
+) -> None:
     transaction_repo.store_transaction(0, "01", "11", 85, 15)
     transaction_repo.store_transaction(0, "01", "21", 85, 15)
     transaction_repo.store_transaction(1, "11", "12", 100, 0)

@@ -14,9 +14,9 @@ class WalletSqliteRepository:
 
         connection.execute(
             """CREATE TABLE IF NOT EXISTS wallets(
-            user_id integer, 
-            wallet_address text PRIMARY KEY, 
-            balance real NOT NULL, 
+            user_id integer,
+            wallet_address text PRIMARY KEY,
+            balance real NOT NULL,
             FOREIGN KEY(user_id) references users(id))
         """
         )
@@ -40,9 +40,7 @@ class WalletSqliteRepository:
             "SELECT COUNT(*) FROM wallets WHERE user_id = ?", (user_id,)
         ).fetchone()
 
-        if result is None:
-            return 0
-        return result[0]
+        return 0 if result is None else int(result[0])
 
     def get_balance(self, wallet_address: str) -> float:
         connection: Connection = self.database.get_connection()
@@ -52,9 +50,7 @@ class WalletSqliteRepository:
             "SELECT balance FROM wallets WHERE wallet_address = ?", (wallet_address,)
         ).fetchone()
 
-        if result is None:
-            return -1
-        return result[0]
+        return -1 if result is None else float(result[0])
 
     def wallet_exists(self, wallet_address: str) -> bool:
         connection: Connection = self.database.get_connection()
@@ -92,7 +88,7 @@ class WalletSqliteRepository:
         new_balance: float = self.get_balance(to_wallet) + amount
         self.set_balance(to_wallet, new_balance)
 
-    def set_balance(self, wallet_address, new_balance: float):
+    def set_balance(self, wallet_address: str, new_balance: float) -> None:
         connection: Connection = self.database.get_connection()
         cursor: Cursor = connection.cursor()
 

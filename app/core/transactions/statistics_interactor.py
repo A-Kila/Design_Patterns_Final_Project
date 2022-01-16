@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from app.core.interfaces.transitions_interface import ITransactionRepository, Statistics
 

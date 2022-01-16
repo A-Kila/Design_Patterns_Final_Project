@@ -21,7 +21,7 @@ def wallet_interactor() -> WalletsInteractor:
     )
 
 
-def test_create_wallet(wallet_interactor: WalletsInteractor):
+def test_create_wallet(wallet_interactor: WalletsInteractor) -> None:
     request = WalletPostRequest(api_key="key_1")
 
     response: WalletResponse = wallet_interactor.create_wallet(request=request)
@@ -31,7 +31,7 @@ def test_create_wallet(wallet_interactor: WalletsInteractor):
     assert response.wallet_address
 
 
-def test_create_several_wallet_success(wallet_interactor: WalletsInteractor):
+def test_create_several_wallet_success(wallet_interactor: WalletsInteractor) -> None:
     request_1 = WalletPostRequest(api_key="key_1")
     response_1: WalletResponse = wallet_interactor.create_wallet(request=request_1)
 
@@ -47,7 +47,7 @@ def test_create_several_wallet_success(wallet_interactor: WalletsInteractor):
     assert response_2.wallet_address
 
 
-def test_create_several_wallet_limit_fail(wallet_interactor: WalletsInteractor):
+def test_create_several_wallet_limit_fail(wallet_interactor: WalletsInteractor) -> None:
     request_1 = WalletPostRequest(api_key="key_1")
     response_1: WalletResponse = wallet_interactor.create_wallet(request=request_1)
 
@@ -74,7 +74,7 @@ def test_create_several_wallet_limit_fail(wallet_interactor: WalletsInteractor):
         wallet_interactor.create_wallet(request=request_4)
 
 
-def test_get_wallet_success(wallet_interactor: WalletsInteractor):
+def test_get_wallet_success(wallet_interactor: WalletsInteractor) -> None:
     users_interactor: UsersInteractor = UsersInteractor(
         user_repo=wallet_interactor.user_repo
     )
@@ -93,7 +93,7 @@ def test_get_wallet_success(wallet_interactor: WalletsInteractor):
     assert response.balance_usd == wallet.balance_usd
 
 
-def test_get_wallet_with_invalid_user_id(wallet_interactor: WalletsInteractor):
+def test_get_wallet_with_invalid_user_id(wallet_interactor: WalletsInteractor) -> None:
     request_create = WalletPostRequest(api_key="key_1")
     wallet: WalletResponse = wallet_interactor.create_wallet(request=request_create)
 
@@ -104,7 +104,7 @@ def test_get_wallet_with_invalid_user_id(wallet_interactor: WalletsInteractor):
         wallet_interactor.get_wallet(request=request)
 
 
-def test_get_wallet_with_invalid_address(wallet_interactor: WalletsInteractor):
+def test_get_wallet_with_invalid_address(wallet_interactor: WalletsInteractor) -> None:
     users_interactor: UsersInteractor = UsersInteractor(
         user_repo=wallet_interactor.user_repo
     )
@@ -120,7 +120,7 @@ def test_get_wallet_with_invalid_address(wallet_interactor: WalletsInteractor):
         wallet_interactor.get_wallet(request=request)
 
 
-def test_get_wallet_with_other_user(wallet_interactor: WalletsInteractor):
+def test_get_wallet_with_other_user(wallet_interactor: WalletsInteractor) -> None:
     users_interactor: UsersInteractor = UsersInteractor(
         user_repo=wallet_interactor.user_repo
     )
