@@ -27,8 +27,6 @@ class UserSqliteRepository:
         cur.execute("SELECT id FROM users WHERE api_key=?", (api_key,))
         user_id: Optional[int] = cur.fetchone()[0]
 
-        con.commit()
-
         return user_id
 
     def clear(self) -> None:
