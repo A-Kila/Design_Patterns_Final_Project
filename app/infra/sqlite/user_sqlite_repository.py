@@ -46,7 +46,7 @@ class UserSqliteRepository:
             """
             create table if not EXISTS users
             (id integer PRIMARY key AUTOINCREMENT, api_key text UNIQUE)
-        """
+            """
         )
 
         con.commit()
