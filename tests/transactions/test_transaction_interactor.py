@@ -1,0 +1,71 @@
+import pytest
+
+from app.core.interfaces.transitions_interface import Transaction
+from app.core.transactions.tax_calculator import FreeTax
+from app.core.transactions.transactions_interactor import (
+    CreateTransactionRequest,
+    GetTransactionsResponse,
+    GetUserTransactionsRequest,
+    TransactionInteractor,
+)
+from app.core.users.users_interactor import UsersInteractor, UsersResponse
+from app.core.wallets.wallets_interactor import (
+    WalletPostRequest,
+    WalletResponse,
+    WalletsInteractor,
+)
+from app.infra.in_memory.transactions_repository import TransactionRepositoryInMemory
+from app.infra.in_memory.user_in_memory import UserInMemoryRepository
+from app.infra.in_memory.wallet_repository import InMemoryWalletRepository
+from app.infra.rateapi.coingecko import CoinGeckoApi
+
+
+@pytest.fixture()
+def transaction_interactor() -> TransactionInteractor:
+    return TransactionInteractor(
+        transaction_repo=TransactionRepositoryInMemory(),
+        user_repo=UserInMemoryRepository(),
+        wallet_repo=InMemoryWalletRepository(),
+    )
+
+
+def test_success_transaction(transaction_interactor: TransactionInteractor):
+    users_interactor: UsersInteractor = UsersInteractor(
+        user_repo=transaction_interactor.user_repo
+    )
+    wallet_interactor: WalletsInteractor = WalletsInteractor(
+        user_repo=transaction_interactor.user_repo,
+        wallet_repo=transaction_interactor.wallet_repo,
+        rate_getter=CoinGeckoApi(),
+    )
+
+    user: UsersResponse = users_interactor.generate_new_api_key()
+    api_key: str = user.api_key
+    user_id: int = users_interactor.user_repo.get_user_id(api_key=api_key)
+
+    request_wallet = WalletPostRequest(api_key=api_key)
+    wallet_1: WalletResponse = wallet_interactor.create_wallet(request=request_wallet)
+    wallet_2: WalletResponse = wallet_interactor.create_wallet(request=request_wallet)
+
+    request: CreateTransactionRequest = CreateTransactionRequest(
+        api_key=api_key,
+        wallet_to=wallet_1.wallet_address,
+        wallet_from=wallet_2.wallet_address,
+        amount=100,
+    )
+
+    transaction_interactor.make_transaction(request=request)
+
+    get_request = GetUserTransactionsRequest(api_key=api_key)
+    response: GetTransactionsResponse = transaction_interactor.get_transactions(
+        request=get_request
+    )
+
+    transactions: list[Transaction] = response.transactions
+    transaction: Transaction = transactions[0]
+
+    assert transaction.user_id == user_id
+    assert transaction.to_wallet == wallet_1.wallet_address
+    assert transaction.from_wallet == wallet_2.wallet_address
+    assert transaction.amount == 100
+    assert transaction.profit == FreeTax().tax_rate
