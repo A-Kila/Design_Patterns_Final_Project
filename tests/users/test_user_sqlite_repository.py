@@ -2,13 +2,12 @@ import pytest
 
 from app.infra.connection.database import Database
 from app.infra.sqlite.user_sqlite_repository import UserSqliteRepository
-
-DATABASE_NAME = "test.db"
+from definitions import TEST_DATABASE_NAME
 
 
 @pytest.fixture
 def database() -> Database:
-    return Database(DATABASE_NAME)
+    return Database(TEST_DATABASE_NAME)
 
 
 @pytest.fixture

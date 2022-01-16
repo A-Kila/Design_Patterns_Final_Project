@@ -42,9 +42,11 @@ class UserSqliteRepository:
         con: Connection = self.database.get_connection()
         cur: Cursor = con.cursor()
 
-        cur.execute("""
+        cur.execute(
+            """
             create table if not EXISTS users
             (id integer PRIMARY key AUTOINCREMENT, api_key text UNIQUE)
-        """)
+        """
+        )
 
         con.commit()
