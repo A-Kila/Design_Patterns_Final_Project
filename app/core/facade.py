@@ -4,10 +4,10 @@ from app.core.interfaces.transitions_interface import ITransactionRepository
 from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IWalletRepository
 from app.core.transactions.transactions_interactor import (
+    CreateTransactionRequest,
     GetTransactionsResponse,
     GetUserTransactionsRequest,
     TransactionInteractor,
-    CreateTransactionRequest,
 )
 from app.core.users.users_interactor import UsersInteractor, UsersResponse
 from app.core.wallets.wallets_interactor import (
@@ -37,7 +37,9 @@ class WalletService:
     def create_wallet(self, request: WalletPostRequest) -> WalletResponse:
         return self.wallet_interactor.create_wallet(request=request)
 
-    def get_transactions(self, request: GetUserTransactionsRequest) -> GetTransactionsResponse:
+    def get_transactions(
+        self, request: GetUserTransactionsRequest
+    ) -> GetTransactionsResponse:
         return self.transaction_interactor.get_transactions(request)
 
     @classmethod

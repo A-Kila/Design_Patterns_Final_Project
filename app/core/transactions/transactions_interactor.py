@@ -1,6 +1,9 @@
 from dataclasses import dataclass, field
 
-from app.core.interfaces.transitions_interface import ITransactionRepository, Transaction
+from app.core.interfaces.transitions_interface import (
+    ITransactionRepository,
+    Transaction,
+)
 from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IWalletRepository
 from app.core.transactions.tax_calculator import (
@@ -35,7 +38,9 @@ class TransactionInteractor:
     user_repo: IUserRepository
     tax_calculator: TaxCalculator = field(default_factory=TaxCalculator)
 
-    def get_transactions(self, request: GetUserTransactionsRequest) -> GetTransactionsResponse:
+    def get_transactions(
+        self, request: GetUserTransactionsRequest
+    ) -> GetTransactionsResponse:
         user_id = self.user_repo.get_user_id(request.api_key)
 
         return GetTransactionsResponse(self.transaction_repo.get_transactions(user_id))
