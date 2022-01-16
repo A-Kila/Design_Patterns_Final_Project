@@ -118,3 +118,21 @@ def test_get_wallet_with_invalid_address(wallet_interactor: WalletsInteractor):
     request = WalletGetRequest(api_key=api_key, wallet_address="INVALID_ADDRESS")
     with pytest.raises(Exception):
         wallet_interactor.get_wallet(request=request)
+
+
+def test_get_wallet_with_other_user(wallet_interactor: WalletsInteractor):
+    users_interactor: UsersInteractor = UsersInteractor(
+        user_repo=wallet_interactor.user_repo
+    )
+
+    user_1: UsersResponse = users_interactor.generate_new_api_key()
+    user_2: UsersResponse = users_interactor.generate_new_api_key()
+    api_key_1: str = user_1.api_key
+    api_key_2: str = user_2.api_key
+
+    request_create = WalletPostRequest(api_key=api_key_1)
+    wallet: WalletResponse = wallet_interactor.create_wallet(request=request_create)
+
+    request = WalletGetRequest(api_key=api_key_2, wallet_address=wallet.wallet_address)
+    with pytest.raises(Exception):
+        wallet_interactor.get_wallet(request=request)
