@@ -30,7 +30,7 @@ def transaction_interactor() -> TransactionInteractor:
     )
 
 
-def test_success_transaction(transaction_interactor: TransactionInteractor):
+def test_success_transaction(transaction_interactor: TransactionInteractor) -> None:
     users_interactor: UsersInteractor = UsersInteractor(
         user_repo=transaction_interactor.user_repo
     )
@@ -74,7 +74,7 @@ def test_success_transaction(transaction_interactor: TransactionInteractor):
 
 def test_make_transaction_with_invalid_wallet(
     transaction_interactor: TransactionInteractor,
-):
+) -> None:
     users_interactor: UsersInteractor = UsersInteractor(
         user_repo=transaction_interactor.user_repo
     )
@@ -112,7 +112,7 @@ def test_make_transaction_with_invalid_wallet(
 
 def test_make_transaction_with_other_user(
     transaction_interactor: TransactionInteractor,
-):
+) -> None:
     users_interactor: UsersInteractor = UsersInteractor(
         user_repo=transaction_interactor.user_repo
     )
@@ -142,7 +142,7 @@ def test_make_transaction_with_other_user(
 
 def test_get_transactions_with_invalid_wallet(
     transaction_interactor: TransactionInteractor,
-):
+) -> None:
     users_interactor: UsersInteractor = UsersInteractor(
         user_repo=transaction_interactor.user_repo
     )
@@ -159,7 +159,7 @@ def test_get_transactions_with_invalid_wallet(
 
 def test_get_transactions_with_other_user(
     transaction_interactor: TransactionInteractor,
-):
+) -> None:
     users_interactor: UsersInteractor = UsersInteractor(
         user_repo=transaction_interactor.user_repo
     )
