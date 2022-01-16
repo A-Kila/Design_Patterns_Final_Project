@@ -9,7 +9,7 @@ class Database:
 
     def __init__(self, database_name: str):
         self.connection = sqlite3.connect(
-            os.path.dirname(os.path.abspath(__file__)) + "\\" + database_name,
+            os.path.dirname(os.path.abspath(__file__)) + "\\database\\" + database_name,
             check_same_thread=False,
         )
 
