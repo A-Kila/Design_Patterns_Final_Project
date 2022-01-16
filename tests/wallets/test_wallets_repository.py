@@ -1,9 +1,7 @@
 import pytest
 
-from app.core.interfaces.transitions_interface import ITransactionRepository, Statistics
+from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IWalletRepository
-from app.core.users.users_interactor import IUserRepository
-from app.infra.in_memory.transactions_repository import TransactionRepositoryInMemory
 from app.infra.in_memory.user_in_memory import UserInMemoryRepository
 from app.infra.in_memory.wallet_repository import InMemoryWalletRepository
 
@@ -14,47 +12,13 @@ def starting_user_id() -> int:
 
 
 @pytest.fixture()
-def user_repo() -> IUserRepository:
-    return UserInMemoryRepository()
-
-
-@pytest.fixture()
 def wallet_repo() -> IWalletRepository:
     return InMemoryWalletRepository()
 
 
 @pytest.fixture()
-def transaction_repo() -> ITransactionRepository:
-    return TransactionRepositoryInMemory()
-
-
-def test_user_repository_store_get_user(user_repo: IUserRepository):
-    user_repo.store_user("0imfnc8mVLWwsAawjYr4Rx")
-    user_repo.store_user("1imfnc8mVLWwsAawjYr4Rx")
-    assert user_repo.get_user_id("0imfnc8mVLWwsAawjYr4Rx") == user_repo.get_user_id(
-        "0imfnc8mVLWwsAawjYr4Rx"
-    )
-    assert user_repo.get_user_id("1imfnc8mVLWwsAawjYr4Rx") != user_repo.get_user_id(
-        "0imfnc8mVLWwsAawjYr4Rx"
-    )
-    user_repo.store_user("3imfnc8mVLWwsAawjYr4Rx")
-    user_repo.store_user("4imfnc8mVLWwsAawjYr4Rx")
-    assert user_repo.get_user_id("3imfnc8mVLWwsAawjYr4Rx") == user_repo.get_user_id(
-        "3imfnc8mVLWwsAawjYr4Rx"
-    )
-    assert user_repo.get_user_id("4imfnc8mVLWwsAawjYr4Rx") != user_repo.get_user_id(
-        "0imfnc8mVLWwsAawjYr4Rx"
-    )
-
-
-def test_user_repository_store_get_with_more_input(
-    starting_user_id: int, user_repo: IUserRepository
-):
-    for i in range(1000):
-        api_key: str = "apy_key" + str(i)
-        user_repo.store_user(api_key)
-        cur_id: int = user_repo.get_user_id(api_key)
-        assert cur_id == starting_user_id + i
+def user_repo() -> IUserRepository:
+    return UserInMemoryRepository()
 
 
 def test_wallet_repository_create_wallet(
@@ -186,47 +150,3 @@ def test_wallet_repository_give_money(
     assert wallet_repo.get_balance("1wallet1") == 1.5
     wallet_repo.give_money("0wallet2", 0)
     assert wallet_repo.get_balance("0wallet2") == 1
-
-
-def test_transaction_repository_store_get_transaction(
-    transaction_repo: ITransactionRepository,
-):
-    transaction_repo.store_transaction(0, "01", "11", 85, 15)
-    transaction_repo.store_transaction(0, "01", "21", 85, 15)
-    transaction_repo.store_transaction(0, "01", "31", 85, 15)
-    transaction_repo.store_transaction(1, "11", "12", 100, 0)
-    transaction_repo.store_transaction(1, "11", "13", 100, 0)
-    transaction_repo.store_transaction(1, "11", "01", 85, 15)
-    for trans in transaction_repo.get_transactions(0):
-        assert trans.amount == 85 and trans.profit == 15
-    assert len(transaction_repo.get_transactions(1)) == 3
-
-
-def test_transaction_repository_get_wallet_transactions(
-    transaction_repo: ITransactionRepository,
-):
-    transaction_repo.store_transaction(0, "01", "11", 85, 15)
-    transaction_repo.store_transaction(0, "01", "21", 85, 15)
-    transaction_repo.store_transaction(0, "01", "31", 85, 15)
-    transaction_repo.store_transaction(0, "01", "11", 85, 15)
-    transaction_repo.store_transaction(0, "01", "21", 85, 15)
-    transaction_repo.store_transaction(0, "01", "31", 85, 15)
-    transaction_repo.store_transaction(1, "11", "01", 85, 15)
-    transaction_repo.store_transaction(1, "11", "01", 85, 15)
-    transaction_repo.store_transaction(1, "11", "01", 85, 15)
-    for trans in transaction_repo.get_wallet_transactions("01"):
-        assert trans.amount == 85 and trans.profit == 15
-    assert len(transaction_repo.get_wallet_transactions("01")) == 9
-
-
-def test_transaction_repository_get_statistics(
-    transaction_repo: ITransactionRepository,
-):
-    transaction_repo.store_transaction(0, "01", "11", 85, 15)
-    transaction_repo.store_transaction(0, "01", "21", 85, 15)
-    transaction_repo.store_transaction(1, "11", "12", 100, 0)
-    transaction_repo.store_transaction(1, "11", "13", 100, 0)
-    transaction_repo.store_transaction(1, "11", "01", 85, 15)
-    transaction_repo.store_transaction(0, "01", "21", 85, 15)
-    stat: Statistics = transaction_repo.get_statistics()
-    assert stat.total_transactions == 6 and stat.total_profit == 60
