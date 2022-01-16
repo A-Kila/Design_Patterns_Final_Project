@@ -3,6 +3,11 @@ from dataclasses import dataclass
 from app.core.interfaces.transitions_interface import ITransactionRepository
 from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IWalletRepository
+from app.core.transactions.statistics_interactor import (
+    StatisticsInteractor,
+    StatisticsGetRequest,
+    StatisticsGetResponse,
+)
 from app.core.transactions.transactions_interactor import (
     CreateTransactionRequest,
     GetTransactionsResponse,
@@ -25,6 +30,7 @@ class WalletService:
     user_interactor: UsersInteractor
     wallet_interactor: WalletsInteractor
     transaction_interactor: TransactionInteractor
+    statistics_interactor: StatisticsInteractor
 
     def register_user(self) -> UsersResponse:
         return self.user_interactor.generate_new_api_key()
@@ -46,6 +52,9 @@ class WalletService:
     def get_wallet_transactions(self, request: WalletTransactionsRequest):
         return self.transaction_interactor.get_wallet_transactions(request=request)
 
+    def get_statistics(self, request: StatisticsGetRequest) -> StatisticsGetResponse:
+        return self.statistics_interactor.get_statistics(request)
+
     @classmethod
     def create(
         cls,
@@ -61,4 +70,5 @@ class WalletService:
                 rate_getter=CoinGeckoApi(),
             ),
             TransactionInteractor(wallet_repo, transaction_repo, user_repo),
+            StatisticsInteractor(transaction_repo=transaction_repo)
         )
