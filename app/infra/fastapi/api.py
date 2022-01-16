@@ -6,6 +6,7 @@ from app.core.facade import (
     UsersResponse,
     WalletService,
 )
+from app.core.transactions.statistics_interactor import StatisticsGetResponse, StatisticsGetRequest
 from app.core.wallets.wallets_interactor import (
     WalletGetRequest,
     WalletPostRequest,
@@ -59,5 +60,5 @@ def get_wallet_transactions(
 
 
 @wallet_api.get("/statistics")
-def get_statistics(admin_key: str, core: WalletService = Depends(get_core)) -> str:
-    pass
+def get_statistics(admin_key: str, core: WalletService = Depends(get_core)) -> StatisticsGetResponse:
+    return core.get_statistics(StatisticsGetRequest(admin_key))
