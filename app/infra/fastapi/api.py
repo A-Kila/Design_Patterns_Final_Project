@@ -3,7 +3,6 @@ from starlette.requests import Request
 
 from app.core.facade import (
     TransactionRequest,
-    TransactionResponse,
     UsersResponse,
     WalletService,
 )
@@ -43,8 +42,8 @@ def get_wallet(
 @wallet_api.post("/transaction")
 def perform_transaction(
     request: TransactionRequest, core: WalletService = Depends(get_core)
-) -> TransactionResponse:
-    return core.make_transaction(request)
+) -> None:
+    core.make_transaction(request)
 
 
 @wallet_api.get("/transactions")

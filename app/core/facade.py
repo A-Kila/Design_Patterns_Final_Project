@@ -6,7 +6,6 @@ from app.core.interfaces.wallets_interface import IWalletRepository
 from app.core.transactions.transactions_interactor import (
     TransactionInteractor,
     TransactionRequest,
-    TransactionResponse,
 )
 from app.core.users.users_interactor import UsersInteractor, UsersResponse
 from app.core.wallets.wallets_interactor import (
@@ -27,8 +26,8 @@ class WalletService:
     def register_user(self) -> UsersResponse:
         return self.user_interactor.generate_new_api_key()
 
-    def make_transaction(self, request: TransactionRequest) -> TransactionResponse:
-        return self.transaction_interactor.make_transaction(request)
+    def make_transaction(self, request: TransactionRequest) -> None:
+        self.transaction_interactor.make_transaction(request)
 
     def get_wallet(self, request: WalletGetRequest) -> WalletResponse:
         return self.wallet_interactor.get_wallet(request)
