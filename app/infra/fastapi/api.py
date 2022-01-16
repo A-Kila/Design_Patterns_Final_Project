@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from starlette.requests import Request
 
 from app.core.facade import (
-    TransactionRequest,
+    CreateTransactionRequest,
     UsersResponse,
     WalletService,
 )
@@ -41,7 +41,7 @@ def get_wallet(
 
 @wallet_api.post("/transaction")
 def perform_transaction(
-    request: TransactionRequest, core: WalletService = Depends(get_core)
+    request: CreateTransactionRequest, core: WalletService = Depends(get_core)
 ) -> None:
     core.make_transaction(request)
 
