@@ -8,6 +8,7 @@ from app.core.transactions.transactions_interactor import (
     GetTransactionsResponse,
     GetUserTransactionsRequest,
     TransactionInteractor,
+    WalletTransactionsRequest,
 )
 from app.core.users.users_interactor import UsersInteractor, UsersResponse
 from app.core.wallets.wallets_interactor import (
@@ -41,6 +42,9 @@ class WalletService:
         self, request: GetUserTransactionsRequest
     ) -> GetTransactionsResponse:
         return self.transaction_interactor.get_transactions(request)
+
+    def get_wallet_transactions(self, request: WalletTransactionsRequest):
+        return self.transaction_interactor.get_wallet_transactions(request=request)
 
     @classmethod
     def create(

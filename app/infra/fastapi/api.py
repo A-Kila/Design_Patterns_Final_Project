@@ -5,6 +5,7 @@ from app.core.facade import CreateTransactionRequest, UsersResponse, WalletServi
 from app.core.transactions.transactions_interactor import (
     GetTransactionsResponse,
     GetUserTransactionsRequest,
+    WalletTransactionsRequest,
 )
 from app.core.wallets.wallets_interactor import (
     WalletGetRequest,
@@ -55,9 +56,9 @@ def get_transactions(
 
 @wallet_api.get("/wallet/{address}/transactions")
 def get_wallet_transactions(
-    api_key: str, core: WalletService = Depends(get_core)
-) -> str:
-    pass
+    api_key: str, address: str, core: WalletService = Depends(get_core)
+) -> GetTransactionsResponse:
+    return core.get_wallet_transactions(WalletTransactionsRequest(api_key, address))
 
 
 @wallet_api.get("/statistics")
