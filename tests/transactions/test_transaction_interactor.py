@@ -69,3 +69,41 @@ def test_success_transaction(transaction_interactor: TransactionInteractor):
     assert transaction.from_wallet == wallet_2.wallet_address
     assert transaction.amount == 100
     assert transaction.profit == FreeTax().tax_rate
+
+
+def test_make_transaction_with_invalid_wallet(
+    transaction_interactor: TransactionInteractor,
+):
+    users_interactor: UsersInteractor = UsersInteractor(
+        user_repo=transaction_interactor.user_repo
+    )
+    wallet_interactor: WalletsInteractor = WalletsInteractor(
+        user_repo=transaction_interactor.user_repo,
+        wallet_repo=transaction_interactor.wallet_repo,
+        rate_getter=CoinGeckoApi(),
+    )
+
+    user: UsersResponse = users_interactor.generate_new_api_key()
+
+    request_wallet = WalletPostRequest(api_key=user.api_key)
+    wallet: WalletResponse = wallet_interactor.create_wallet(request=request_wallet)
+
+    request_1: CreateTransactionRequest = CreateTransactionRequest(
+        api_key=user.api_key,
+        wallet_to="Invalid_wallet",
+        wallet_from=wallet.wallet_address,
+        amount=100,
+    )
+
+    with pytest.raises(Exception):
+        transaction_interactor.make_transaction(request=request_1)
+
+    request_2: CreateTransactionRequest = CreateTransactionRequest(
+        api_key=user.api_key,
+        wallet_to=wallet.wallet_address,
+        wallet_from="Invalid_wallet",
+        amount=100,
+    )
+
+    with pytest.raises(Exception):
+        transaction_interactor.make_transaction(request=request_2)
