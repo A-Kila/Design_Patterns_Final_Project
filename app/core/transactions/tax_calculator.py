@@ -14,7 +14,7 @@ class DifferentUserTax:
         return 0.015
 
 
-class FreeTax(ITax):
+class FreeTax:
     @property
     def tax_rate(self) -> float:
         return 0

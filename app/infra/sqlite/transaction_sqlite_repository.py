@@ -10,21 +10,7 @@ class TransactionSqliteRepository:
     database: Database
 
     def __post_init__(self) -> None:
-        con: Connection = self.database.get_connection()
-        con.execute(
-            """
-            create table if not EXISTS transactions (
-                user_id integer,
-                wallet_from text,
-                wallet_to TEXT,
-                amount real,
-                profit real,
-                FOREIGN KEY(user_id) REFERENCES users(id),
-                FOREIGN key(wallet_from) REFERENCES wallets(wallet_address),
-                FOREIGN KEY(wallet_to) REFERENCES wallets(wallets_address)
-            )
-        """
-        )
+        self.__create_table()
 
     def store_transaction(
         self,
@@ -48,7 +34,7 @@ class TransactionSqliteRepository:
         con: Connection = self.database.get_connection()
         cur: Cursor = con.cursor()
 
-        cur.execute("SELECT * FROM transitions WHERE user_id=?", (user_id,))
+        cur.execute("SELECT * FROM transactions WHERE user_id=?", (user_id,))
         transactions_info = cur.fetchall()
 
         return self.__get_tranaction_list(transactions_info)
@@ -57,7 +43,7 @@ class TransactionSqliteRepository:
         con: Connection = self.database.get_connection()
         cur: Cursor = con.cursor()
 
-        cur.execute("SELECT * FROM transitions WHERE wallet_from=?", (wallet_address,))
+        cur.execute("SELECT * FROM transactions WHERE wallet_from=?", (wallet_address,))
         transactions_info = cur.fetchall()
 
         return self.__get_tranaction_list(transactions_info)
@@ -66,14 +52,33 @@ class TransactionSqliteRepository:
         con: Connection = self.database.get_connection()
         cur: Cursor = con.cursor()
 
-        cur.execute("SELECT COUNT(user_id), SUM(profit)")
+        cur.execute("SELECT COUNT(user_id), SUM(profit) FROM transactions")
         total_transactions, total_profit = cur.fetchone()
 
-        return Statistics(total_transactions, total_profit)
+        return Statistics(total_transactions, total_profit or 0.0)
 
     def clear(self) -> None:
         con: Connection = self.database.get_connection()
-        con.execute("DROP TABLE transactions")
+        con.execute("DELETE FROM transactions")
+
+        self.__create_table()
+
+    def __create_table(self) -> None:
+        con: Connection = self.database.get_connection()
+        con.execute(
+            """
+            create table if not EXISTS transactions (
+                user_id integer,
+                wallet_from text,
+                wallet_to TEXT,
+                amount real,
+                profit real,
+                FOREIGN KEY(user_id) REFERENCES users(id),
+                FOREIGN key(wallet_from) REFERENCES wallets(wallet_address),
+                FOREIGN KEY(wallet_to) REFERENCES wallets(wallets_address)
+            )
+        """
+        )
 
     def __get_tranaction_list(
         self, info: list[tuple[int, str, str, float, float]]
