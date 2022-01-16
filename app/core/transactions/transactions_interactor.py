@@ -19,6 +19,12 @@ class TransactionRequest:
 
 
 @dataclass
+class WalletTransactionsRequest:
+    api_key: str
+    wallet_address: str
+
+
+@dataclass
 class TransactionInteractor:
     wallet_repo: IWalletRepository
     transaction_repo: ITransactionRepository
@@ -53,3 +59,6 @@ class TransactionInteractor:
         self.transaction_repo.store_transaction(
             user_id, request.wallet_from, request.wallet_to, amount_transfered, tax
         )
+
+    def get_wallet_transactions(self, request: WalletTransactionsRequest):
+        pass
