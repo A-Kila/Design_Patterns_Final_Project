@@ -1,5 +1,6 @@
 import pytest
 
+from app.core.users.users_interactor import UsersInteractor, UsersResponse
 from app.core.wallets.wallets_interactor import (
     WalletGetRequest,
     WalletPostRequest,
@@ -74,12 +75,30 @@ def test_create_several_wallet_limit_fail(wallet_interactor: WalletsInteractor):
 
 
 def test_get_wallet_success(wallet_interactor: WalletsInteractor):
-    request_create = WalletPostRequest(api_key="key_1")
+    users_interactor: UsersInteractor = UsersInteractor(
+        user_repo=wallet_interactor.user_repo
+    )
+
+    user: UsersResponse = users_interactor.generate_new_api_key()
+    api_key: str = user.api_key
+
+    request_create = WalletPostRequest(api_key=api_key)
     wallet: WalletResponse = wallet_interactor.create_wallet(request=request_create)
 
-    request = WalletGetRequest(api_key="key_1", wallet_address=wallet.wallet_address)
+    request = WalletGetRequest(api_key=api_key, wallet_address=wallet.wallet_address)
     response: WalletResponse = wallet_interactor.get_wallet(request=request)
 
     assert response.wallet_address == wallet.wallet_address
     assert response.balance_btc == wallet.balance_btc
     assert response.balance_usd == wallet.balance_usd
+
+
+def test_get_wallet_with_invalid_user_id(wallet_interactor: WalletsInteractor):
+    request_create = WalletPostRequest(api_key="key_1")
+    wallet: WalletResponse = wallet_interactor.create_wallet(request=request_create)
+
+    request = WalletGetRequest(
+        api_key="INVALID_KEY", wallet_address=wallet.wallet_address
+    )
+    with pytest.raises(Exception):
+        wallet_interactor.get_wallet(request=request)
