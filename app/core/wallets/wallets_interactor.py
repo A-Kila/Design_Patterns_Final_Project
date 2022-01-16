@@ -74,12 +74,20 @@ class WalletsInteractor:
 
     def get_wallet(self, request: WalletGetRequest) -> WalletResponse:
         address: str = request.wallet_address
+        user_id: int = self.user_repo.get_user_id(request.api_key)
+
+        if user_id is None:
+            raise Exception("Incorrect API Key")
+
+        if not self.wallet_repo.wallet_exists(request.wallet_address):
+            raise Exception("Incorrect Wallet address")
+
+        if not self.wallet_repo.is_my_wallet(user_id, request.wallet_address):
+            raise Exception("This Wallet doesn't Belong to You")
+
         wallet_balance_sats: float = self.wallet_repo.get_balance(
             request.wallet_address
         )
-
-        if wallet_balance_sats == -1:
-            raise Exception("Incorrect Wallet address")
 
         wallet_balance_btc: float = self.sats_to_btc(wallet_balance_sats)
         wallet_balance_usd: float = self.btc_to_usd(wallet_balance_btc)
