@@ -1,11 +1,7 @@
 from fastapi import APIRouter, Depends
 from starlette.requests import Request
 
-from app.core.facade import (
-    TransactionRequest,
-    UsersResponse,
-    WalletService,
-)
+from app.core.facade import TransactionRequest, UsersResponse, WalletService
 from app.core.wallets.wallets_interactor import (
     WalletGetRequest,
     WalletPostRequest,
