@@ -105,7 +105,8 @@ def test_get_wallet_with_invalid_user_id(wallet_interactor: WalletsInteractor) -
 
     with pytest.raises(HTTPException) as e:
         wallet_interactor.get_wallet(request=request)
-    assert e.value.status_code == status.HTTP_404_NOT_FOUND
+    assert e.value.status_code == status.HTTP_401_UNAUTHORIZED
+
 
 def test_get_wallet_with_invalid_address(wallet_interactor: WalletsInteractor) -> None:
     users_interactor: UsersInteractor = UsersInteractor(
