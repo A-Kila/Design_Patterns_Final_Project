@@ -6,6 +6,7 @@ from fastapi import HTTPException, status
 from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IWalletRepository
 from app.infra.rateapi.coingecko import CoinGeckoApi
+from definitions import MAX_WALLET_COUNT
 
 
 @dataclass
@@ -38,17 +39,16 @@ class WalletsInteractor:
     rate_getter: CoinGeckoApi
 
     INITIAL_WALLET_BALANCE: int = 100000000
-    MAX_WALLET_COUNT: int = 3
 
     def create_wallet(self, request: WalletPostRequest) -> WalletResponse:
         api_key: str = request.api_key
         user_id: int = self.user_repo.get_user_id(api_key=api_key)
         number_of_wallets: int = self.wallet_repo.get_wallet_count(user_id=user_id)
 
-        if number_of_wallets >= self.MAX_WALLET_COUNT:
+        if number_of_wallets >= MAX_WALLET_COUNT:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"User has already had {self.MAX_WALLET_COUNT} wallets",
+                detail=f"User has already had {MAX_WALLET_COUNT} wallets",
             )
 
         wallet_address: str = f"{user_id}_{number_of_wallets + 1}"
