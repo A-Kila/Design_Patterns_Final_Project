@@ -22,6 +22,7 @@ from app.core.wallets.wallets_interactor import (
     WalletResponse,
     WalletsInteractor,
 )
+from app.infra.fastapi.exception_handler import HttpExceptionHandler
 from app.infra.rateapi.coingecko import CoinGeckoApi
 
 
@@ -73,7 +74,16 @@ class WalletService:
                 user_repo=user_repo,
                 wallet_repo=wallet_repo,
                 rate_getter=CoinGeckoApi(),
+                exeption_handler=HttpExceptionHandler(),
             ),
-            TransactionInteractor(wallet_repo, transaction_repo, user_repo),
-            StatisticsInteractor(transaction_repo=transaction_repo),
+            TransactionInteractor(
+                wallet_repo,
+                transaction_repo,
+                user_repo,
+                exception_handler=HttpExceptionHandler(),
+            ),
+            StatisticsInteractor(
+                transaction_repo=transaction_repo,
+                expection_handler=HttpExceptionHandler(),
+            ),
         )
