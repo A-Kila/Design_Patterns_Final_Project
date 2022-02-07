@@ -90,6 +90,7 @@ def get_wallet_transactions(
 ) -> GetTransactionsResponse:
     return core.get_wallet_transactions(WalletTransactionsRequest(api_key, address))
 
+
 @wallet_api.get("/statistics")
 def get_statistics(
     admin_key: str, core: WalletService = Depends(get_core)
