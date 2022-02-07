@@ -5,7 +5,7 @@ from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IRateApi, IWalletRepository
 from app.core.wallets.address_generator import SimpleAddressGenerator
 from app.core.wallets.currency_converter import BitcoinConverter
-from definitions import MAX_WALLET_COUNT, INITIAL_WALLET_BALANCE
+from definitions import INITIAL_WALLET_BALANCE, MAX_WALLET_COUNT
 
 
 @dataclass
@@ -41,7 +41,9 @@ class WalletsInteractor:
         if number_of_wallets >= MAX_WALLET_COUNT:
             raise self.exception_handler.max_wallets
 
-        wallet_address: str = SimpleAddressGenerator.generate_address(user_id, number_of_wallets)
+        wallet_address: str = SimpleAddressGenerator.generate_address(
+            user_id, number_of_wallets
+        )
         balance = INITIAL_WALLET_BALANCE
 
         self.wallet_repo.create_wallet(
@@ -73,8 +75,12 @@ class WalletsInteractor:
             request.wallet_address
         )
 
-        wallet_balance_btc: float = BitcoinConverter.convert_from(wallet_balance_sats, "sats", self.rate_getter)
-        wallet_balance_usd: float = BitcoinConverter.convert_to(wallet_balance_btc, "usd", self.rate_getter)
+        wallet_balance_btc: float = BitcoinConverter.convert_from(
+            wallet_balance_sats, "sats", self.rate_getter
+        )
+        wallet_balance_usd: float = BitcoinConverter.convert_to(
+            wallet_balance_btc, "usd", self.rate_getter
+        )
 
         return WalletResponse(
             wallet_address=address,

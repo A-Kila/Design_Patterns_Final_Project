@@ -17,7 +17,9 @@ class IWalletRepository(Protocol):
     def is_my_wallet(self, user_id: int, wallet_address: str) -> bool:
         pass
 
-    def make_transaction(self, from_wallet: str, to_wallet: str, amount_from: float, amount_to: float) -> None:
+    def make_transaction(
+        self, from_wallet: str, to_wallet: str, amount_from: float, amount_to: float
+    ) -> None:
         pass
 
     def take_money(self, from_wallet: str, amount: float) -> None:
