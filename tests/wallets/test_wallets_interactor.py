@@ -8,6 +8,7 @@ from app.core.wallets.wallets_interactor import (
     WalletResponse,
     WalletsInteractor,
 )
+from app.infra.fastapi.exception_handler import HttpExceptionHandler
 from app.infra.in_memory.user_in_memory import UserInMemoryRepository
 from app.infra.in_memory.wallet_repository import InMemoryWalletRepository
 from app.infra.rateapi.coingecko import CoinGeckoApi
@@ -19,6 +20,7 @@ def wallet_interactor() -> WalletsInteractor:
         user_repo=UserInMemoryRepository(),
         wallet_repo=InMemoryWalletRepository(),
         rate_getter=CoinGeckoApi(),
+        exception_handler=HttpExceptionHandler(),
     )
 
 
@@ -93,19 +95,6 @@ def test_get_wallet_success(wallet_interactor: WalletsInteractor) -> None:
     assert response.wallet_address == wallet.wallet_address
     assert response.balance_btc == wallet.balance_btc
     assert response.balance_usd == wallet.balance_usd
-
-
-def test_get_wallet_with_invalid_user_id(wallet_interactor: WalletsInteractor) -> None:
-    request_create = WalletPostRequest(api_key="key_1")
-    wallet: WalletResponse = wallet_interactor.create_wallet(request=request_create)
-
-    request = WalletGetRequest(
-        api_key="INVALID_KEY", wallet_address=wallet.wallet_address
-    )
-
-    with pytest.raises(HTTPException) as e:
-        wallet_interactor.get_wallet(request=request)
-    assert e.value.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 def test_get_wallet_with_invalid_address(wallet_interactor: WalletsInteractor) -> None:

@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from app.core.interfaces.exception_handle_interface import IExceptionHandler
 from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IRateApi, IWalletRepository
+from definitions import MAX_WALLET_COUNT
 
 
 @dataclass
@@ -28,7 +29,7 @@ class WalletsInteractor:
     user_repo: IUserRepository
     wallet_repo: IWalletRepository
     rate_getter: IRateApi
-    exeption_handler: IExceptionHandler
+    exception_handler: IExceptionHandler
 
     INITIAL_WALLET_BALANCE: int = 100000000
 
@@ -37,8 +38,8 @@ class WalletsInteractor:
         user_id: int = self.user_repo.get_user_id(api_key=api_key)
         number_of_wallets: int = self.wallet_repo.get_wallet_count(user_id=user_id)
 
-        if number_of_wallets >= self.MAX_WALLET_COUNT:
-            raise self.exeption_handler.max_wallets
+        if number_of_wallets >= MAX_WALLET_COUNT:
+            raise self.exception_handler.max_wallets
 
         wallet_address: str = f"{user_id}_{number_of_wallets + 1}"
         balance = self.INITIAL_WALLET_BALANCE
@@ -71,10 +72,10 @@ class WalletsInteractor:
         user_id: int = self.user_repo.get_user_id(request.api_key)
 
         if not self.wallet_repo.wallet_exists(request.wallet_address):
-            raise self.exeption_handler.no_wallet
+            raise self.exception_handler.no_wallet
 
         if not self.wallet_repo.is_my_wallet(user_id, request.wallet_address):
-            raise self.exeption_handler.wallet_access_denied
+            raise self.exception_handler.wallet_access_denied
 
         wallet_balance_sats: float = self.wallet_repo.get_balance(
             request.wallet_address

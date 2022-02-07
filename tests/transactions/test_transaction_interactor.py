@@ -16,6 +16,7 @@ from app.core.wallets.wallets_interactor import (
     WalletResponse,
     WalletsInteractor,
 )
+from app.infra.fastapi.exception_handler import HttpExceptionHandler
 from app.infra.in_memory.transactions_repository import TransactionRepositoryInMemory
 from app.infra.in_memory.user_in_memory import UserInMemoryRepository
 from app.infra.in_memory.wallet_repository import InMemoryWalletRepository
@@ -28,6 +29,7 @@ def transaction_interactor() -> TransactionInteractor:
         transaction_repo=TransactionRepositoryInMemory(),
         user_repo=UserInMemoryRepository(),
         wallet_repo=InMemoryWalletRepository(),
+        exception_handler=HttpExceptionHandler(),
     )
 
 
@@ -39,6 +41,7 @@ def test_success_transaction(transaction_interactor: TransactionInteractor) -> N
         user_repo=transaction_interactor.user_repo,
         wallet_repo=transaction_interactor.wallet_repo,
         rate_getter=CoinGeckoApi(),
+        exception_handler=HttpExceptionHandler(),
     )
 
     user: UsersResponse = users_interactor.generate_new_api_key()
@@ -83,6 +86,7 @@ def test_make_transaction_with_invalid_wallet(
         user_repo=transaction_interactor.user_repo,
         wallet_repo=transaction_interactor.wallet_repo,
         rate_getter=CoinGeckoApi(),
+        exception_handler=HttpExceptionHandler(),
     )
 
     user: UsersResponse = users_interactor.generate_new_api_key()
@@ -123,6 +127,7 @@ def test_make_transaction_with_other_user(
         user_repo=transaction_interactor.user_repo,
         wallet_repo=transaction_interactor.wallet_repo,
         rate_getter=CoinGeckoApi(),
+        exception_handler=HttpExceptionHandler(),
     )
 
     user_1: UsersResponse = users_interactor.generate_new_api_key()
@@ -175,6 +180,7 @@ def test_get_transactions_with_other_user(
         user_repo=transaction_interactor.user_repo,
         wallet_repo=transaction_interactor.wallet_repo,
         rate_getter=CoinGeckoApi(),
+        exception_handler=HttpExceptionHandler(),
     )
 
     request_wallet = WalletPostRequest(api_key=user.api_key)

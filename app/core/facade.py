@@ -74,7 +74,7 @@ class WalletService:
                 user_repo=user_repo,
                 wallet_repo=wallet_repo,
                 rate_getter=CoinGeckoApi(),
-                exeption_handler=HttpExceptionHandler(),
+                exception_handler=HttpExceptionHandler(),
             ),
             TransactionInteractor(
                 wallet_repo,
