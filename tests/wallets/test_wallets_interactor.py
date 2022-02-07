@@ -94,7 +94,6 @@ def test_get_wallet_success(wallet_interactor: WalletsInteractor) -> None:
 
     assert response.wallet_address == wallet.wallet_address
     assert response.balance_btc == wallet.balance_btc
-    assert response.balance_usd == wallet.balance_usd
 
 
 def test_get_wallet_with_invalid_address(wallet_interactor: WalletsInteractor) -> None:
