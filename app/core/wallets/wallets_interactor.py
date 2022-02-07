@@ -1,11 +1,9 @@
 from dataclasses import dataclass
-from typing import Protocol
 
 from fastapi import HTTPException, status
 
 from app.core.interfaces.users_interface import IUserRepository
-from app.core.interfaces.wallets_interface import IWalletRepository
-from app.infra.rateapi.coingecko import CoinGeckoApi
+from app.core.interfaces.wallets_interface import IRateApi, IWalletRepository
 
 
 @dataclass
@@ -26,16 +24,11 @@ class WalletResponse:
     wallet_address: str
 
 
-class IRateApi(Protocol):
-    def get_rate(self, currency: str) -> float:
-        pass
-
-
 @dataclass
 class WalletsInteractor:
     user_repo: IUserRepository
     wallet_repo: IWalletRepository
-    rate_getter: CoinGeckoApi
+    rate_getter: IRateApi
 
     INITIAL_WALLET_BALANCE: int = 100000000
     MAX_WALLET_COUNT: int = 3
