@@ -32,6 +32,9 @@ class WalletService:
     transaction_interactor: TransactionInteractor
     statistics_interactor: StatisticsInteractor
 
+    def is_user_registered(self, api_key: str) -> bool:
+        return bool(self.user_interactor.is_user_registered(api_key))
+
     def register_user(self) -> UsersResponse:
         return self.user_interactor.generate_new_api_key()
 
