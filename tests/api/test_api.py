@@ -1,8 +1,10 @@
 import pytest
 from fastapi import FastAPI, HTTPException, status
 from fastapi.testclient import TestClient
+from requests import Response
 
 from app.core.facade import WalletService
+from app.core.transactions.transactions_interactor import CreateTransactionRequest
 from app.infra.fastapi.api import wallet_api
 from app.infra.in_memory.transactions_repository import TransactionRepositoryInMemory
 from app.infra.in_memory.user_in_memory import UserInMemoryRepository
@@ -108,3 +110,58 @@ def test_get_wallet(test_client: TestClient) -> None:
     )
 
     assert wallet_not_your_wallet_second.status_code == 403
+
+
+"""
+get_statistics - /transactions, 
+get_wallet_transactions - /wallet/{address}/transactions, 
+get_transactions - /transactions, 
+perform_transaction - /transaction
+"""
+
+"""api_key: str
+    wallet_from: str
+    wallet_to: str
+    amount: float"""
+
+
+def test_perform_transaction(test_client: TestClient) -> None:
+    request: CreateTransactionRequest = CreateTransactionRequest(api_key="user1",
+                                                                 wallet_from="user1w1",
+                                                                 wallet_to="user2w2",
+                                                                 amount=1.0)
+    response: Response = test_client.post(f"/transaction?request={request}")
+    #response: Response = test_client.post("/transaction?request={}".format(request)) #????
+
+    assert response.status_code == 404 # why?
+
+
+def test_get_transactions(test_client: TestClient) -> None:
+    register_response: Response = test_client.post(f"/users")
+    registered_user: str = register_response.json()["api_key"]
+    bad_user: str = "bad_user"
+
+    assert register_response.status_code == 200
+    good_response: Response = test_client.get(f"/transactions?api_key={registered_user}")
+    assert good_response.status_code == 200
+    assert good_response.json() == {'transactions': []}
+    bad_response: Response = test_client.get(f"/transactions?api_key={bad_user}")
+    #assert bad_response.status_code == 404
+    #assert bad_response.json() == {'detail': "User not registered"}
+
+
+def test_get_wallet_transactions(test_client: TestClient) -> None:
+    pass
+
+
+def test_get_statistics(test_client: TestClient) -> None:
+    admin_key: str = "admin123"
+    user_key: str = "not_an_admin"
+    good_response: Response = test_client.get(f"/statistics?admin_key={admin_key}")
+    assert good_response.status_code == 200
+    assert good_response.json() == {'number_of_transactions': 0, 'platform_profit': 0.0}
+    bad_response: Response = test_client.get(f"/statistics?admin_key={user_key}")
+    assert bad_response.status_code == 403
+    assert bad_response.json() == {'detail': "Access Denied"}
+
+
