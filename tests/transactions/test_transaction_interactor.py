@@ -157,7 +157,7 @@ def test_get_transactions_with_invalid_wallet(
     request = WalletTransactionsRequest(
         api_key=api_key, wallet_address="Invalid_wallet"
     )
-    
+
     with pytest.raises(HTTPException) as e:
         transaction_interactor.get_wallet_transactions(request=request)
     assert e.value.status_code == status.HTTP_404_NOT_FOUND
