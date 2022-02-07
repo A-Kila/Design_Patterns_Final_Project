@@ -128,7 +128,7 @@ def test_perform_transaction(test_client: TestClient) -> None:
     assert response.status_code == status.HTTP_404_NOT_FOUND
     response = test_client.post(f"/wallets?api_key={user1}")
     assert response.status_code == status.HTTP_200_OK
-    user1_wallet_address = response.json()['wallet_address']
+    user1_wallet_address = response.json()["wallet_address"]
     response: Response = test_client.post(
         f"/transaction?api_key={user1}&wallet_from={user1_wallet_address}&wallet_to=user2w2&amount=1.0"
     )
@@ -137,7 +137,7 @@ def test_perform_transaction(test_client: TestClient) -> None:
     user2: str = response.json()["api_key"]
     response = test_client.post(f"/wallets?api_key={user2}")
     assert response.status_code == status.HTTP_200_OK
-    user2_wallet_address = response.json()['wallet_address']
+    user2_wallet_address = response.json()["wallet_address"]
     response: Response = test_client.post(
         f"/transaction?api_key={user1}&wallet_from={user1_wallet_address}&wallet_to={user2_wallet_address}&amount=1.0"
     )
@@ -167,10 +167,16 @@ def test_get_transactions(test_client: TestClient) -> None:
     assert bad_response.status_code == status.HTTP_401_UNAUTHORIZED
 
     user1: str = test_client.post("/users").json()["api_key"]
-    user1_wallet_address = test_client.post(f"/wallets?api_key={user1}").json()['wallet_address'] # type?
+    user1_wallet_address = test_client.post(f"/wallets?api_key={user1}").json()[
+        "wallet_address"
+    ]  # type?
     user2: str = test_client.post("/users").json()["api_key"]
-    user2_wallet_address = test_client.post(f"/wallets?api_key={user2}").json()['wallet_address']
-    registered_user_wallet_address = test_client.post(f"/wallets?api_key={registered_user}").json()['wallet_address']
+    user2_wallet_address = test_client.post(f"/wallets?api_key={user2}").json()[
+        "wallet_address"
+    ]
+    registered_user_wallet_address = test_client.post(
+        f"/wallets?api_key={registered_user}"
+    ).json()["wallet_address"]
     test_client.post(
         f"/transaction?api_key={registered_user}&"
         f"wallet_from={registered_user_wallet_address}&"
@@ -199,8 +205,10 @@ def test_get_wallet_transactions(test_client: TestClient) -> None:
     assert response.status_code == status.HTTP_404_NOT_FOUND
     response = test_client.post(f"/wallets?api_key={user1}")
     assert response.status_code == status.HTTP_200_OK
-    user1_wallet_address = response.json()['wallet_address']
-    response = test_client.get(f"/wallet/{user1_wallet_address}/transactions?api_key={user1}")
+    user1_wallet_address = response.json()["wallet_address"]
+    response = test_client.get(
+        f"/wallet/{user1_wallet_address}/transactions?api_key={user1}"
+    )
     assert response.status_code == status.HTTP_200_OK
 
 
