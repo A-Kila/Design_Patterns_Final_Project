@@ -25,3 +25,8 @@ class IWalletRepository(Protocol):
 
     def give_money(self, to_wallet: str, amount: float) -> None:
         pass
+
+
+class IRateApi(Protocol):
+    def get_rate(self, currency: str) -> float:
+        pass

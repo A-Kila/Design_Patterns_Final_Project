@@ -19,3 +19,6 @@ class UsersInteractor:
         self.user_repo.store_user(user.api_key)
 
         return UsersResponse(user.api_key)
+
+    def is_user_registered(self, api_key: str) -> bool:
+        return self.user_repo.get_user_id(api_key) is not None

@@ -1,12 +1,8 @@
 from dataclasses import dataclass
-from typing import Protocol
 
-from fastapi import HTTPException, status
-
+from app.core.interfaces.exception_handle_interface import IExceptionHandler
 from app.core.interfaces.users_interface import IUserRepository
-from app.core.interfaces.wallets_interface import IWalletRepository
-from app.infra.rateapi.coingecko import CoinGeckoApi
-from definitions import MAX_WALLET_COUNT
+from app.core.interfaces.wallets_interface import IRateApi, IWalletRepository
 
 
 @dataclass
@@ -27,16 +23,12 @@ class WalletResponse:
     wallet_address: str
 
 
-class IRateApi(Protocol):
-    def get_rate(self, currency: str) -> float:
-        pass
-
-
 @dataclass
 class WalletsInteractor:
     user_repo: IUserRepository
     wallet_repo: IWalletRepository
-    rate_getter: CoinGeckoApi
+    rate_getter: IRateApi
+    exeption_handler: IExceptionHandler
 
     INITIAL_WALLET_BALANCE: int = 100000000
 
@@ -45,11 +37,8 @@ class WalletsInteractor:
         user_id: int = self.user_repo.get_user_id(api_key=api_key)
         number_of_wallets: int = self.wallet_repo.get_wallet_count(user_id=user_id)
 
-        if number_of_wallets >= MAX_WALLET_COUNT:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"User has already had {MAX_WALLET_COUNT} wallets",
-            )
+        if number_of_wallets >= self.MAX_WALLET_COUNT:
+            raise self.exeption_handler.max_wallets
 
         wallet_address: str = f"{user_id}_{number_of_wallets + 1}"
         balance = self.INITIAL_WALLET_BALANCE
@@ -81,21 +70,11 @@ class WalletsInteractor:
         address: str = request.wallet_address
         user_id: int = self.user_repo.get_user_id(request.api_key)
 
-        if user_id is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect API Key"
-            )
-
         if not self.wallet_repo.wallet_exists(request.wallet_address):
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Incorrect Wallet address"
-            )
+            raise self.exeption_handler.no_wallet
 
         if not self.wallet_repo.is_my_wallet(user_id, request.wallet_address):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="This Wallet doesn't Belong to You",
-            )
+            raise self.exeption_handler.wallet_access_denied
 
         wallet_balance_sats: float = self.wallet_repo.get_balance(
             request.wallet_address
