@@ -36,7 +36,4 @@ def test_user_repository(repo: UserSqliteRepository) -> None:
     with pytest.raises(Exception):
         repo.store_user(api_key1)
 
-    with pytest.raises(Exception):
-        repo.get_user_id("Not a real key")
-
     repo.clear()

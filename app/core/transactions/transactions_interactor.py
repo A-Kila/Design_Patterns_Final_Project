@@ -78,6 +78,10 @@ class TransactionInteractor:
         tax = self.tax_calculator.get_tax(request.amount)
         amount_transfered = self.tax_calculator.get_money_transfered(request.amount)
 
+        self.wallet_repo.make_transaction(
+            request.wallet_from, request.wallet_to, request.amount, amount_transfered
+        )
+
         self.transaction_repo.store_transaction(
             user_id, request.wallet_from, request.wallet_to, amount_transfered, tax
         )

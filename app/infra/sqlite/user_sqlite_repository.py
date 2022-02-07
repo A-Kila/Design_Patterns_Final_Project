@@ -25,7 +25,8 @@ class UserSqliteRepository:
         cur: Cursor = con.cursor()
 
         cur.execute("SELECT id FROM users WHERE api_key=?", (api_key,))
-        user_id: Optional[int] = cur.fetchone()[0]
+        fetch_info = cur.fetchone()
+        user_id: Optional[int] = None if fetch_info is None else fetch_info[0]
 
         return user_id
 

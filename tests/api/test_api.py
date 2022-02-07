@@ -37,16 +37,16 @@ def test_create_wallet(test_client: TestClient) -> None:
 
     user_key: str = user_create_response.json()["api_key"]
 
-    wallet_create_response = test_client.post("/wallets?api_key={}".format(user_key))
+    wallet_create_response = test_client.post(f"/wallets?api_key={user_key}")
 
     assert wallet_create_response.status_code == status.HTTP_200_OK
     assert wallet_create_response.json()["balance_btc"] == 1
 
     for i in range(MAX_WALLET_COUNT - 1):
-        test_client.post("/wallets?api_key={}".format(user_key))
+        test_client.post(f"/wallets?api_key={user_key}")
 
     assert (
-        test_client.post("/wallets?api_key={}".format(user_key)).status_code
+        test_client.post(f"/wallets?api_key={user_key}").status_code
         == status.HTTP_400_BAD_REQUEST
     )
 
@@ -56,12 +56,12 @@ def test_get_wallet(test_client: TestClient) -> None:
 
     user_key: str = user_create_response.json()["api_key"]
 
-    wallet_create_response = test_client.post("/wallets?api_key={}".format(user_key))
+    wallet_create_response = test_client.post(f"/wallets?api_key={user_key}")
 
     wallet_address_first: str = wallet_create_response.json()["wallet_address"]
 
     wallet_get_response_first = test_client.get(
-        "/wallet/{}?api_key={}".format(wallet_address_first, user_key)
+        f"/wallet/{wallet_address_first}?api_key={user_key}"
     )
 
     assert wallet_get_response_first.status_code == status.HTTP_200_OK
@@ -70,11 +70,11 @@ def test_get_wallet(test_client: TestClient) -> None:
 
     if MAX_WALLET_COUNT > 1:
         wallet_address_second: str = test_client.post(
-            "/wallets?api_key={}".format(user_key)
+            f"/wallets?api_key={user_key}"
         ).json()["wallet_address"]
 
         wallet_get_response_second = test_client.get(
-            "/wallet/{}?api_key={}".format(wallet_address_second, user_key)
+            f"/wallet/{wallet_address_second}?api_key={user_key}"
         )
 
         assert wallet_get_response_second.status_code == status.HTTP_200_OK
@@ -97,18 +97,18 @@ def test_get_wallet(test_client: TestClient) -> None:
 
     user_key_two = test_client.post("/users").json()["api_key"]
 
-    user_two_wallet = test_client.post(
-        "/wallets?api_key={}".format(user_key_two)
-    ).json()["wallet_address"]
+    user_two_wallet = test_client.post(f"/wallets?api_key={user_key_two}").json()[
+        "wallet_address"
+    ]
 
     wallet_not_your_wallet_first = test_client.get(
-        "/wallet/{}?api_key={}".format(user_two_wallet, user_key)
+        f"/wallet/{user_two_wallet}?api_key={user_key}"
     )
 
     assert wallet_not_your_wallet_first.status_code == status.HTTP_403_FORBIDDEN
 
     wallet_not_your_wallet_second = test_client.get(
-        "/wallet/{}?api_key={}".format(wallet_address_first, user_key_two)
+        f"/wallet/{wallet_address_first}?api_key={user_key_two}"
     )
 
     assert wallet_not_your_wallet_second.status_code == status.HTTP_403_FORBIDDEN
@@ -119,40 +119,47 @@ def test_perform_transaction(test_client: TestClient) -> None:
         "/transaction?api_key=unknown&wallet_from=user1w1&wallet_to=user2w2&amount=1.0"
     )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
     response = test_client.post("/users")
     assert response.status_code == status.HTTP_200_OK
+
     user1: str = response.json()["api_key"]
-    response: Response = test_client.post(
+    response = test_client.post(
         f"/transaction?api_key={user1}&wallet_from=user1w1&wallet_to=user2w2&amount=1.0"
     )
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
     response = test_client.post(f"/wallets?api_key={user1}")
     assert response.status_code == status.HTTP_200_OK
+
     user1_wallet_address = response.json()["wallet_address"]
-    response: Response = test_client.post(
+    response = test_client.post(
         f"/transaction?api_key={user1}&wallet_from={user1_wallet_address}&wallet_to=user2w2&amount=1.0"
     )
     response = test_client.post("/users")
     assert response.status_code == status.HTTP_200_OK
+
     user2: str = response.json()["api_key"]
     response = test_client.post(f"/wallets?api_key={user2}")
     assert response.status_code == status.HTTP_200_OK
+
     user2_wallet_address = response.json()["wallet_address"]
-    response: Response = test_client.post(
+    response = test_client.post(
         f"/transaction?api_key={user1}&wallet_from={user1_wallet_address}&wallet_to={user2_wallet_address}&amount=1.0"
     )
     assert response.status_code == status.HTTP_200_OK
-    response: Response = test_client.post(
+
+    response = test_client.post(
         f"/transaction?api_key={user1}&"
         f"wallet_from={user1_wallet_address}&"
         f"wallet_to={user2_wallet_address}&"
-        f"amount=1000000000"
+        f"amount=100000000"
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 def test_get_transactions(test_client: TestClient) -> None:
-    register_response: Response = test_client.post(f"/users")
+    register_response: Response = test_client.post("/users")
     registered_user: str = register_response.json()["api_key"]
     bad_user: str = "bad_user"
 
@@ -169,14 +176,17 @@ def test_get_transactions(test_client: TestClient) -> None:
     user1: str = test_client.post("/users").json()["api_key"]
     user1_wallet_address = test_client.post(f"/wallets?api_key={user1}").json()[
         "wallet_address"
-    ]  # type?
+    ]
+
     user2: str = test_client.post("/users").json()["api_key"]
     user2_wallet_address = test_client.post(f"/wallets?api_key={user2}").json()[
         "wallet_address"
     ]
+
     registered_user_wallet_address = test_client.post(
         f"/wallets?api_key={registered_user}"
     ).json()["wallet_address"]
+
     test_client.post(
         f"/transaction?api_key={registered_user}&"
         f"wallet_from={registered_user_wallet_address}&"
@@ -189,22 +199,25 @@ def test_get_transactions(test_client: TestClient) -> None:
         f"wallet_to={user1_wallet_address}&"
         f"amount=1.0"
     )
-    good_response: Response = test_client.get(
-        f"/transactions?api_key={registered_user}"
-    )
+
+    good_response = test_client.get(f"/transactions?api_key={registered_user}")
     good_response.status_code = status.HTTP_200_OK
 
 
 def test_get_wallet_transactions(test_client: TestClient) -> None:
-    response: Response = test_client.get(f"/wallet/1000/transactions?api_key=unknown")
+    response: Response = test_client.get("/wallet/1000/transactions?api_key=unknown")
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
     response = test_client.post("/users")
     assert response.status_code == status.HTTP_200_OK
+
     user1: str = response.json()["api_key"]
     response = test_client.get(f"/wallet/1000/transactions?api_key={user1}")
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
     response = test_client.post(f"/wallets?api_key={user1}")
     assert response.status_code == status.HTTP_200_OK
+
     user1_wallet_address = response.json()["wallet_address"]
     response = test_client.get(
         f"/wallet/{user1_wallet_address}/transactions?api_key={user1}"
@@ -215,9 +228,11 @@ def test_get_wallet_transactions(test_client: TestClient) -> None:
 def test_get_statistics(test_client: TestClient) -> None:
     admin_key: str = "admin123"
     user_key: str = "not_an_admin"
+
     good_response: Response = test_client.get(f"/statistics?admin_key={admin_key}")
     assert good_response.status_code == status.HTTP_200_OK
     assert good_response.json() == {"number_of_transactions": 0, "platform_profit": 0.0}
+
     bad_response: Response = test_client.get(f"/statistics?admin_key={user_key}")
     assert bad_response.status_code == status.HTTP_403_FORBIDDEN
     assert bad_response.json() == {"detail": "Access Denied"}

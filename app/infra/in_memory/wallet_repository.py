@@ -33,9 +33,11 @@ class InMemoryWalletRepository:
 
         return wallet_address in wallet_list
 
-    def make_transaction(self, from_wallet: str, to_wallet: str, amount: float) -> None:
-        self.take_money(from_wallet, amount)
-        self.give_money(to_wallet, amount)
+    def make_transaction(
+        self, from_wallet: str, to_wallet: str, amount_from: float, amount_to: float
+    ) -> None:
+        self.take_money(from_wallet, amount_from)
+        self.give_money(to_wallet, amount_to)
 
     def take_money(self, from_wallet: str, amount: float) -> None:
         self.wallets[from_wallet] -= amount
