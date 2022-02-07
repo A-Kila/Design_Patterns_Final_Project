@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from fastapi import HTTPException, status
 
 from app.core.interfaces.transitions_interface import ITransactionRepository, Statistics
 
@@ -21,7 +22,7 @@ class StatisticsInteractor:
 
     def get_statistics(self, request: StatisticsGetRequest) -> StatisticsGetResponse:
         if request.admin_api_key != self.ADMIN_API_KEY:
-            raise Exception("you are not the admin")
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access Denied")
         stats: Statistics = self.transaction_repo.get_statistics()
         return StatisticsGetResponse(
             number_of_transactions=stats.total_transactions,

@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from fastapi import HTTPException, status
 
 from app.core.interfaces.transitions_interface import (
     ITransactionRepository,
@@ -57,13 +58,13 @@ class TransactionInteractor:
         if not self.wallet_repo.wallet_exists(
             request.wallet_from
         ) or not self.wallet_repo.wallet_exists(request.wallet_to):
-            raise Exception("One of the wallets you passed does not exist")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="One of the wallets you passed does not exist")
 
         if not self.wallet_repo.is_my_wallet(user_id, request.wallet_from):
-            raise Exception("The user does not have permission to transfer from wallet")
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="The user does not have permission to transfer from wallet")
 
         if self.wallet_repo.get_balance(request.wallet_from) < request.amount:
-            raise Exception("Not enough money on wallet")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not enough money on wallet")
 
         self.__transfer_money(user_id, request)
 
@@ -86,13 +87,13 @@ class TransactionInteractor:
         wallet_address: str = request.wallet_address
 
         if not self.wallet_repo.wallet_exists(wallet_address=wallet_address):
-            raise Exception("Wallet does not exist")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Wallet does not exist")
 
         user_id: int = self.user_repo.get_user_id(api_key=request.api_key)
         if not self.wallet_repo.is_my_wallet(
             wallet_address=wallet_address, user_id=user_id
         ):
-            raise Exception("Wallet does not belong to you")
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Wallet does not belong to you")
 
         transactions = self.transaction_repo.get_wallet_transactions(
             wallet_address=wallet_address

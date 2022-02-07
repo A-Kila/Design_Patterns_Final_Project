@@ -1,4 +1,5 @@
 import pytest
+from fastapi import HTTPException, status
 
 from app.core.interfaces.transitions_interface import Transaction
 from app.core.transactions.tax_calculator import FreeTax
@@ -96,8 +97,9 @@ def test_make_transaction_with_invalid_wallet(
         amount=100,
     )
 
-    with pytest.raises(Exception):
+    with pytest.raises(HTTPException) as e:
         transaction_interactor.make_transaction(request=request_1)
+    assert e.value.status_code == status.HTTP_404_NOT_FOUND
 
     request_2: CreateTransactionRequest = CreateTransactionRequest(
         api_key=user.api_key,
@@ -106,8 +108,9 @@ def test_make_transaction_with_invalid_wallet(
         amount=100,
     )
 
-    with pytest.raises(Exception):
+    with pytest.raises(HTTPException) as e:
         transaction_interactor.make_transaction(request=request_2)
+    assert e.value.status_code == status.HTTP_404_NOT_FOUND
 
 
 def test_make_transaction_with_other_user(
@@ -136,8 +139,9 @@ def test_make_transaction_with_other_user(
         amount=100,
     )
 
-    with pytest.raises(Exception):
+    with pytest.raises(HTTPException) as e:
         transaction_interactor.make_transaction(request=request)
+    assert e.value.status_code == status.HTTP_403_FORBIDDEN
 
 
 def test_get_transactions_with_invalid_wallet(
@@ -153,8 +157,10 @@ def test_get_transactions_with_invalid_wallet(
     request = WalletTransactionsRequest(
         api_key=api_key, wallet_address="Invalid_wallet"
     )
-    with pytest.raises(Exception):
+    
+    with pytest.raises(HTTPException) as e:
         transaction_interactor.get_wallet_transactions(request=request)
+    assert e.value.status_code == status.HTTP_404_NOT_FOUND
 
 
 def test_get_transactions_with_other_user(
@@ -179,5 +185,7 @@ def test_get_transactions_with_other_user(
     request = WalletTransactionsRequest(
         api_key=other_user.api_key, wallet_address=wallet.wallet_address
     )
-    with pytest.raises(Exception):
+
+    with pytest.raises(HTTPException) as e:
         transaction_interactor.get_wallet_transactions(request=request)
+    assert e.value.status_code == status.HTTP_403_FORBIDDEN

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Protocol
+from fastapi import HTTPException, status
 
 from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IWalletRepository
@@ -44,7 +45,8 @@ class WalletsInteractor:
         number_of_wallets: int = self.wallet_repo.get_wallet_count(user_id=user_id)
 
         if number_of_wallets >= self.MAX_WALLET_COUNT:
-            raise Exception(f"user has already had {self.MAX_WALLET_COUNT} wallets")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                detail=f"User has already had {self.MAX_WALLET_COUNT} wallets")
 
         wallet_address: str = f"{user_id}_{number_of_wallets + 1}"
         balance = self.INITIAL_WALLET_BALANCE
@@ -77,13 +79,13 @@ class WalletsInteractor:
         user_id: int = self.user_repo.get_user_id(request.api_key)
 
         if user_id is None:
-            raise Exception("Incorrect API Key")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect API Key")
 
         if not self.wallet_repo.wallet_exists(request.wallet_address):
-            raise Exception("Incorrect Wallet address")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incorrect Wallet address")
 
         if not self.wallet_repo.is_my_wallet(user_id, request.wallet_address):
-            raise Exception("This Wallet doesn't Belong to You")
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="This Wallet doesn't Belong to You")
 
         wallet_balance_sats: float = self.wallet_repo.get_balance(
             request.wallet_address

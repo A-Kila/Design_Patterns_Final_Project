@@ -1,4 +1,5 @@
 import pytest
+from fastapi import HTTPException, status
 
 from app.core.users.users_interactor import UsersInteractor, UsersResponse
 from app.core.wallets.wallets_interactor import (
@@ -70,8 +71,9 @@ def test_create_several_wallet_limit_fail(wallet_interactor: WalletsInteractor) 
     assert response_3.wallet_address
 
     request_4 = WalletPostRequest(api_key="key_4")
-    with pytest.raises(Exception):
+    with pytest.raises(HTTPException) as e:
         wallet_interactor.create_wallet(request=request_4)
+    assert e.value.status_code == status.HTTP_400_BAD_REQUEST
 
 
 def test_get_wallet_success(wallet_interactor: WalletsInteractor) -> None:
@@ -100,8 +102,10 @@ def test_get_wallet_with_invalid_user_id(wallet_interactor: WalletsInteractor) -
     request = WalletGetRequest(
         api_key="INVALID_KEY", wallet_address=wallet.wallet_address
     )
-    with pytest.raises(Exception):
+
+    with pytest.raises(HTTPException) as e:
         wallet_interactor.get_wallet(request=request)
+    assert e.value.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 def test_get_wallet_with_invalid_address(wallet_interactor: WalletsInteractor) -> None:
@@ -116,8 +120,10 @@ def test_get_wallet_with_invalid_address(wallet_interactor: WalletsInteractor) -
     wallet_interactor.create_wallet(request=request_create)
 
     request = WalletGetRequest(api_key=api_key, wallet_address="INVALID_ADDRESS")
-    with pytest.raises(Exception):
+
+    with pytest.raises(HTTPException) as e:
         wallet_interactor.get_wallet(request=request)
+    assert e.value.status_code == status.HTTP_404_NOT_FOUND
 
 
 def test_get_wallet_with_other_user(wallet_interactor: WalletsInteractor) -> None:
@@ -134,5 +140,6 @@ def test_get_wallet_with_other_user(wallet_interactor: WalletsInteractor) -> Non
     wallet: WalletResponse = wallet_interactor.create_wallet(request=request_create)
 
     request = WalletGetRequest(api_key=api_key_2, wallet_address=wallet.wallet_address)
-    with pytest.raises(Exception):
+    with pytest.raises(HTTPException) as e:
         wallet_interactor.get_wallet(request=request)
+    assert e.value.status_code == status.HTTP_403_FORBIDDEN
