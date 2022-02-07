@@ -81,11 +81,6 @@ class WalletsInteractor:
         address: str = request.wallet_address
         user_id: int = self.user_repo.get_user_id(request.api_key)
 
-        if user_id is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect API Key"
-            )
-
         if not self.wallet_repo.wallet_exists(request.wallet_address):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Incorrect Wallet address"

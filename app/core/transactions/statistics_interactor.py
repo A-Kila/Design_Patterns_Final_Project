@@ -19,13 +19,14 @@ class StatisticsGetResponse:
 @dataclass
 class StatisticsInteractor:
     transaction_repo: ITransactionRepository
-    ADMIN_API_KEY: str = "admin123"
+    ADMIN_API_KEY: str = "admin123"     # Super secure password
 
     def get_statistics(self, request: StatisticsGetRequest) -> StatisticsGetResponse:
         if request.admin_api_key != self.ADMIN_API_KEY:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN, detail="Access Denied"
             )
+
         stats: Statistics = self.transaction_repo.get_statistics()
         return StatisticsGetResponse(
             number_of_transactions=stats.total_transactions,
