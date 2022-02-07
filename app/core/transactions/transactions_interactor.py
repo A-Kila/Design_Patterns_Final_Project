@@ -54,6 +54,7 @@ class TransactionInteractor:
     def make_transaction(self, request: CreateTransactionRequest) -> None:
         user_id = self.user_repo.get_user_id(request.api_key)
 
+        # TODO
         if not self.wallet_repo.wallet_exists(
             request.wallet_from
         ) or not self.wallet_repo.wallet_exists(request.wallet_to):
@@ -85,6 +86,7 @@ class TransactionInteractor:
     ) -> GetTransactionsResponse:
         wallet_address: str = request.wallet_address
 
+        # TODO
         if not self.wallet_repo.wallet_exists(wallet_address=wallet_address):
             raise Exception("Wallet does not exist")
 

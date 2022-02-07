@@ -43,6 +43,7 @@ class WalletsInteractor:
         user_id: int = self.user_repo.get_user_id(api_key=api_key)
         number_of_wallets: int = self.wallet_repo.get_wallet_count(user_id=user_id)
 
+        # TODO
         if number_of_wallets >= self.MAX_WALLET_COUNT:
             raise Exception(f"user has already had {self.MAX_WALLET_COUNT} wallets")
 
@@ -76,6 +77,7 @@ class WalletsInteractor:
         address: str = request.wallet_address
         user_id: int = self.user_repo.get_user_id(request.api_key)
 
+        # TODO
         if user_id is None:
             raise Exception("Incorrect API Key")
 
