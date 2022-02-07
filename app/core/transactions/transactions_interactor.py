@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from fastapi import HTTPException, status
+from app.core.interfaces.exception_handle_interface import IExceptionHandler
 
 from app.core.interfaces.transitions_interface import (
     ITransactionRepository,
@@ -44,6 +44,7 @@ class TransactionInteractor:
     wallet_repo: IWalletRepository
     transaction_repo: ITransactionRepository
     user_repo: IUserRepository
+    exception_handler: IExceptionHandler
     tax_calculator: TaxCalculator = field(default_factory=TaxCalculator)
 
     def get_transactions(
@@ -59,22 +60,13 @@ class TransactionInteractor:
         if not self.wallet_repo.wallet_exists(
             request.wallet_from
         ) or not self.wallet_repo.wallet_exists(request.wallet_to):
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="One of the wallets you passed does not exist",
-            )
+            raise self.exception_handler.no_wallet
 
         if not self.wallet_repo.is_my_wallet(user_id, request.wallet_from):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="The user does not have permission to transfer from wallet",
-            )
+            raise self.exception_handler.wallet_access_denied
 
         if self.wallet_repo.get_balance(request.wallet_from) < request.amount:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Not enough money on wallet",
-            )
+            raise self.exception_handler.not_enough_money
 
         self.__transfer_money(user_id, request)
 
@@ -97,18 +89,13 @@ class TransactionInteractor:
         wallet_address: str = request.wallet_address
 
         if not self.wallet_repo.wallet_exists(wallet_address=wallet_address):
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Wallet does not exist"
-            )
+            raise self.exception_handler.no_wallet
 
         user_id: int = self.user_repo.get_user_id(api_key=request.api_key)
         if not self.wallet_repo.is_my_wallet(
             wallet_address=wallet_address, user_id=user_id
         ):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Wallet does not belong to you",
-            )
+            raise self.exception_handler.wallet_access_denied
 
         transactions = self.transaction_repo.get_wallet_transactions(
             wallet_address=wallet_address
