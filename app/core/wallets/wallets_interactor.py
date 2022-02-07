@@ -3,7 +3,9 @@ from dataclasses import dataclass
 from app.core.interfaces.exception_handle_interface import IExceptionHandler
 from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IRateApi, IWalletRepository
-from definitions import MAX_WALLET_COUNT
+from app.core.wallets.address_generator import SimpleAddressGenerator
+from app.core.wallets.currency_converter import BitcoinConverter
+from definitions import MAX_WALLET_COUNT, INITIAL_WALLET_BALANCE
 
 
 @dataclass
@@ -31,8 +33,6 @@ class WalletsInteractor:
     rate_getter: IRateApi
     exception_handler: IExceptionHandler
 
-    INITIAL_WALLET_BALANCE: int = 100000000
-
     def create_wallet(self, request: WalletPostRequest) -> WalletResponse:
         api_key: str = request.api_key
         user_id: int = self.user_repo.get_user_id(api_key=api_key)
@@ -41,8 +41,8 @@ class WalletsInteractor:
         if number_of_wallets >= MAX_WALLET_COUNT:
             raise self.exception_handler.max_wallets
 
-        wallet_address: str = f"{user_id}_{number_of_wallets + 1}"
-        balance = self.INITIAL_WALLET_BALANCE
+        wallet_address: str = SimpleAddressGenerator.generate_address(user_id, number_of_wallets)
+        balance = INITIAL_WALLET_BALANCE
 
         self.wallet_repo.create_wallet(
             user_id=user_id,
@@ -50,22 +50,14 @@ class WalletsInteractor:
             balance=balance,
         )
 
-        balance_btc = self.sats_to_btc(wallet_balance_sats=balance)
-        balance_usd = self.btc_to_usd(wallet_balance_btc=balance_btc)
+        balance_btc = BitcoinConverter.convert_from(balance, "sats", self.rate_getter)
+        balance_usd = BitcoinConverter.convert_to(balance_btc, "usd", self.rate_getter)
 
         return WalletResponse(
             balance_btc=balance_btc,
             balance_usd=balance_usd,
             wallet_address=wallet_address,
         )
-
-    def sats_to_btc(self, wallet_balance_sats: float) -> float:
-        sats_to_btc: float = self.rate_getter.get_rate("sats")
-        return wallet_balance_sats / sats_to_btc
-
-    def btc_to_usd(self, wallet_balance_btc: float) -> float:
-        usd_to_btc: float = self.rate_getter.get_rate("usd")
-        return wallet_balance_btc * usd_to_btc
 
     def get_wallet(self, request: WalletGetRequest) -> WalletResponse:
         address: str = request.wallet_address
@@ -81,8 +73,8 @@ class WalletsInteractor:
             request.wallet_address
         )
 
-        wallet_balance_btc: float = self.sats_to_btc(wallet_balance_sats)
-        wallet_balance_usd: float = self.btc_to_usd(wallet_balance_btc)
+        wallet_balance_btc: float = BitcoinConverter.convert_from(wallet_balance_sats, "sats", self.rate_getter)
+        wallet_balance_usd: float = BitcoinConverter.convert_to(wallet_balance_btc, "usd", self.rate_getter)
 
         return WalletResponse(
             wallet_address=address,

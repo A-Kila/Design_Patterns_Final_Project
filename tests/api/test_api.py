@@ -153,7 +153,7 @@ def test_perform_transaction(test_client: TestClient) -> None:
         f"/transaction?api_key={user1}&"
         f"wallet_from={user1_wallet_address}&"
         f"wallet_to={user2_wallet_address}&"
-        f"amount=1000000000"
+        f"amount=100000000"
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 

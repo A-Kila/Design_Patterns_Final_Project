@@ -55,7 +55,7 @@ def test_wallet_repository_balance(
     wallet_repo.create_wallet(user_id, "0wallet1", 1.0)
     wallet_repo.create_wallet(user_id, "0wallet2", 0.0)
     assert wallet_repo.get_balance("0wallet1") == 1
-    wallet_repo.make_transaction("0wallet1", "0wallet2", 1.0)
+    wallet_repo.make_transaction("0wallet1", "0wallet2", 1.0, 1.0)
     assert wallet_repo.get_balance("0wallet1") == 0
 
 
@@ -103,15 +103,15 @@ def test_wallet_repository_make_transaction(
     wallet_repo.create_wallet(user_id, "0wallet1", 1.0)
     wallet_repo.create_wallet(user_id, "0wallet2", 1.0)
     wallet_repo.create_wallet(user_id + 1, "1wallet1", 1.0)
-    wallet_repo.make_transaction("0wallet1", "1wallet1", 1.0)
+    wallet_repo.make_transaction("0wallet1", "1wallet1", 1.0, 1.0)
     assert wallet_repo.get_balance("0wallet1") == 0
     assert wallet_repo.get_balance("1wallet1") == 2
-    wallet_repo.make_transaction("1wallet1", "0wallet1", 2.0)
+    wallet_repo.make_transaction("1wallet1", "0wallet1", 2.0, 2.0)
     assert wallet_repo.get_balance("1wallet1") == 0
     assert wallet_repo.get_balance("0wallet1") == 2
-    wallet_repo.make_transaction("0wallet1", "0wallet2", 2.0)
+    wallet_repo.make_transaction("0wallet1", "0wallet2", 2.0, 1.0)
     assert wallet_repo.get_balance("0wallet1") == 0
-    assert wallet_repo.get_balance("0wallet2") == 3
+    assert wallet_repo.get_balance("0wallet2") == 2
 
 
 def test_wallet_repository_take_money(

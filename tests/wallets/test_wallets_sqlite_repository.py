@@ -69,14 +69,14 @@ def test_wallets_repository(
     assert wallet_repository.get_balance(wallet_address1_2) == base_balance
     assert wallet_repository.get_balance(wallet_address2_1) == base_balance
 
-    wallet_repository.make_transaction(wallet_address1_1, wallet_address1_2, 100)
+    wallet_repository.make_transaction(wallet_address1_1, wallet_address1_2, 100, 100)
 
     assert wallet_repository.get_balance(wallet_address1_1) == base_balance - 100
     assert wallet_repository.get_balance(wallet_address1_2) == base_balance + 100
 
-    wallet_repository.make_transaction(wallet_address1_2, wallet_address2_1, 200)
+    wallet_repository.make_transaction(wallet_address1_2, wallet_address2_1, 200, 100)
 
     assert wallet_repository.get_balance(wallet_address1_2) == base_balance - 100
-    assert wallet_repository.get_balance(wallet_address2_1) == base_balance + 200
+    assert wallet_repository.get_balance(wallet_address2_1) == base_balance + 100
 
     wallet_repository.drop_table()
