@@ -32,7 +32,7 @@ def test_register_user(test_client: TestClient) -> None:
     assert "api_key" in response.json().keys()
 
 
-def test_create_wallet(test_client: TestClient):
+def test_create_wallet(test_client: TestClient) -> None:
     user_create_response = test_client.post("/users")
 
     user_key: str = user_create_response.json()["api_key"]
