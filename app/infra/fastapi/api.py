@@ -30,8 +30,7 @@ def check_api_key(request: Request, api_key: str) -> None:
 
     if not core.is_user_registered(api_key):
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Permission Denied"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Permission Denied"
         )
 
 
@@ -44,7 +43,7 @@ def register_user(core: WalletService = Depends(get_core)) -> UsersResponse:
 def create_wallet(
     api_key: str,
     core: WalletService = Depends(get_core),
-    _: None = Depends(check_api_key)
+    _: None = Depends(check_api_key),
 ) -> WalletResponse:
     return core.create_wallet(WalletPostRequest(api_key))
 
@@ -54,7 +53,7 @@ def get_wallet(
     api_key: str,
     address: str,
     core: WalletService = Depends(get_core),
-    _: None = Depends(check_api_key)
+    _: None = Depends(check_api_key),
 ) -> WalletResponse:
     return core.get_wallet(WalletGetRequest(api_key, address))
 
@@ -66,16 +65,18 @@ def perform_transaction(
     wallet_to: str,
     amount: float,
     core: WalletService = Depends(get_core),
-    _: None = Depends(check_api_key)
+    _: None = Depends(check_api_key),
 ) -> None:
-    core.make_transaction(CreateTransactionRequest(api_key, wallet_from, wallet_to, amount))
+    core.make_transaction(
+        CreateTransactionRequest(api_key, wallet_from, wallet_to, amount)
+    )
 
 
 @wallet_api.get("/transactions")
 def get_transactions(
     api_key: str,
     core: WalletService = Depends(get_core),
-    _: None = Depends(check_api_key)
+    _: None = Depends(check_api_key),
 ) -> GetTransactionsResponse:
     return core.get_transactions(GetUserTransactionsRequest(api_key))
 
@@ -85,7 +86,7 @@ def get_wallet_transactions(
     api_key: str,
     address: str,
     core: WalletService = Depends(get_core),
-    _: None = Depends(check_api_key)
+    _: None = Depends(check_api_key),
 ) -> GetTransactionsResponse:
     return core.get_wallet_transactions(WalletTransactionsRequest(api_key, address))
 

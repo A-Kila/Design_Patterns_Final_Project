@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 
 from app.core.interfaces.exception_handle_interface import IExceptionHandler
-
 from app.core.interfaces.transitions_interface import (
     ITransactionRepository,
     Transaction,

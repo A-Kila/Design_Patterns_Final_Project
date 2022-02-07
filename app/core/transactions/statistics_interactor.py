@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 from app.core.interfaces.exception_handle_interface import IExceptionHandler
-
 from app.core.interfaces.transitions_interface import ITransactionRepository, Statistics
 
 
@@ -20,7 +19,7 @@ class StatisticsGetResponse:
 class StatisticsInteractor:
     transaction_repo: ITransactionRepository
     expection_handler: IExceptionHandler
-    ADMIN_API_KEY: str = "admin123"     # Super secure password
+    ADMIN_API_KEY: str = "admin123"  # Super secure password
 
     def get_statistics(self, request: StatisticsGetRequest) -> StatisticsGetResponse:
         if request.admin_api_key != self.ADMIN_API_KEY:
