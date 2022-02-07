@@ -31,7 +31,6 @@ class WalletsInteractor:
     exeption_handler: IExceptionHandler
 
     INITIAL_WALLET_BALANCE: int = 100000000
-    MAX_WALLET_COUNT: int = 3
 
     def create_wallet(self, request: WalletPostRequest) -> WalletResponse:
         api_key: str = request.api_key
