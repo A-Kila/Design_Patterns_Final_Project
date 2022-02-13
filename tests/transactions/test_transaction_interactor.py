@@ -17,10 +17,10 @@ from app.core.wallets.wallets_interactor import (
     WalletsInteractor,
 )
 from app.infra.fastapi.exception_handler import HttpExceptionHandler
+from app.infra.in_memory.rate_getter_in_memory import RateGetterInMemory
 from app.infra.in_memory.transactions_repository import TransactionRepositoryInMemory
 from app.infra.in_memory.user_in_memory import UserInMemoryRepository
 from app.infra.in_memory.wallet_repository import InMemoryWalletRepository
-from app.infra.in_memory.rate_getter_in_memory import RateGetterInMemory
 
 
 @pytest.fixture()

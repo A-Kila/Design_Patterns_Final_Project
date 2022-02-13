@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from app.core.interfaces.exception_handle_interface import IExceptionHandler
 
+from app.core.interfaces.exception_handle_interface import IExceptionHandler
 from app.core.interfaces.transitions_interface import ITransactionRepository
 from app.core.interfaces.users_interface import IUserRepository
 from app.core.interfaces.wallets_interface import IRateApi, IWalletRepository

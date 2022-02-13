@@ -6,10 +6,10 @@ from requests import Response
 from app.core.facade import WalletService
 from app.infra.fastapi.api import wallet_api
 from app.infra.fastapi.exception_handler import HttpExceptionHandler
+from app.infra.in_memory.rate_getter_in_memory import RateGetterInMemory
 from app.infra.in_memory.transactions_repository import TransactionRepositoryInMemory
 from app.infra.in_memory.user_in_memory import UserInMemoryRepository
 from app.infra.in_memory.wallet_repository import InMemoryWalletRepository
-from app.infra.in_memory.rate_getter_in_memory import RateGetterInMemory
 from definitions import MAX_WALLET_COUNT
 
 
@@ -26,7 +26,7 @@ def test_client() -> TestClient:
         InMemoryWalletRepository(),
         TransactionRepositoryInMemory(),
         exception_handler,
-        RateGetterInMemory()
+        RateGetterInMemory(),
     )
 
     app.state.exception_handler = exception_handler
