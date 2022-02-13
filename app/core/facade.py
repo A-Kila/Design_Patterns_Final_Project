@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 
+from app.core.interfaces.exception_handle_interface import IExceptionHandler
 from app.core.interfaces.transitions_interface import ITransactionRepository
 from app.core.interfaces.users_interface import IUserRepository
-from app.core.interfaces.wallets_interface import IWalletRepository
+from app.core.interfaces.wallets_interface import IRateApi, IWalletRepository
 from app.core.transactions.statistics_interactor import (
     StatisticsGetRequest,
     StatisticsGetResponse,
@@ -22,8 +23,6 @@ from app.core.wallets.wallets_interactor import (
     WalletResponse,
     WalletsInteractor,
 )
-from app.infra.fastapi.exception_handler import HttpExceptionHandler
-from app.infra.rateapi.coingecko import CoinGeckoApi
 
 
 @dataclass
@@ -67,23 +66,25 @@ class WalletService:
         user_repo: IUserRepository,
         wallet_repo: IWalletRepository,
         transaction_repo: ITransactionRepository,
+        exception_handler: IExceptionHandler,
+        rate_getter: IRateApi,
     ) -> "WalletService":
         return cls(
             UsersInteractor(user_repo),
             WalletsInteractor(
                 user_repo=user_repo,
                 wallet_repo=wallet_repo,
-                rate_getter=CoinGeckoApi(),
-                exception_handler=HttpExceptionHandler(),
+                rate_getter=rate_getter,
+                exception_handler=exception_handler,
             ),
             TransactionInteractor(
                 wallet_repo,
                 transaction_repo,
                 user_repo,
-                exception_handler=HttpExceptionHandler(),
+                exception_handler=exception_handler,
             ),
             StatisticsInteractor(
                 transaction_repo=transaction_repo,
-                expection_handler=HttpExceptionHandler(),
+                expection_handler=exception_handler,
             ),
         )

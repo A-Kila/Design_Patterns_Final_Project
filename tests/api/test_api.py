@@ -5,6 +5,8 @@ from requests import Response
 
 from app.core.facade import WalletService
 from app.infra.fastapi.api import wallet_api
+from app.infra.fastapi.exception_handler import HttpExceptionHandler
+from app.infra.in_memory.rate_getter_in_memory import RateGetterInMemory
 from app.infra.in_memory.transactions_repository import TransactionRepositoryInMemory
 from app.infra.in_memory.user_in_memory import UserInMemoryRepository
 from app.infra.in_memory.wallet_repository import InMemoryWalletRepository
@@ -16,11 +18,18 @@ def test_client() -> TestClient:
     app = FastAPI()
 
     app.include_router(wallet_api)
+
+    exception_handler = HttpExceptionHandler()
+
     app.state.core = WalletService.create(
         UserInMemoryRepository(),
         InMemoryWalletRepository(),
         TransactionRepositoryInMemory(),
+        exception_handler,
+        RateGetterInMemory(),
     )
+
+    app.state.exception_handler = exception_handler
 
     return TestClient(app)
 
