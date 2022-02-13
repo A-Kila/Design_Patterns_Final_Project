@@ -20,7 +20,7 @@ from app.infra.fastapi.exception_handler import HttpExceptionHandler
 from app.infra.in_memory.transactions_repository import TransactionRepositoryInMemory
 from app.infra.in_memory.user_in_memory import UserInMemoryRepository
 from app.infra.in_memory.wallet_repository import InMemoryWalletRepository
-from app.infra.rateapi.coingecko import CoinGeckoApi
+from app.infra.in_memory.rate_getter_in_memory import RateGetterInMemory
 
 
 @pytest.fixture()
@@ -40,7 +40,7 @@ def test_success_transaction(transaction_interactor: TransactionInteractor) -> N
     wallet_interactor: WalletsInteractor = WalletsInteractor(
         user_repo=transaction_interactor.user_repo,
         wallet_repo=transaction_interactor.wallet_repo,
-        rate_getter=CoinGeckoApi(),
+        rate_getter=RateGetterInMemory(),
         exception_handler=HttpExceptionHandler(),
     )
 
@@ -85,7 +85,7 @@ def test_make_transaction_with_invalid_wallet(
     wallet_interactor: WalletsInteractor = WalletsInteractor(
         user_repo=transaction_interactor.user_repo,
         wallet_repo=transaction_interactor.wallet_repo,
-        rate_getter=CoinGeckoApi(),
+        rate_getter=RateGetterInMemory(),
         exception_handler=HttpExceptionHandler(),
     )
 
@@ -126,7 +126,7 @@ def test_make_transaction_with_other_user(
     wallet_interactor: WalletsInteractor = WalletsInteractor(
         user_repo=transaction_interactor.user_repo,
         wallet_repo=transaction_interactor.wallet_repo,
-        rate_getter=CoinGeckoApi(),
+        rate_getter=RateGetterInMemory(),
         exception_handler=HttpExceptionHandler(),
     )
 
@@ -179,7 +179,7 @@ def test_get_transactions_with_other_user(
     wallet_interactor: WalletsInteractor = WalletsInteractor(
         user_repo=transaction_interactor.user_repo,
         wallet_repo=transaction_interactor.wallet_repo,
-        rate_getter=CoinGeckoApi(),
+        rate_getter=RateGetterInMemory(),
         exception_handler=HttpExceptionHandler(),
     )
 

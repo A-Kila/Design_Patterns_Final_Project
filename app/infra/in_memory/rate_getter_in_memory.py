@@ -1,4 +1,4 @@
-class CoinGeckoApi:
+class RateGetterInMemory:
     RATES: dict[str, float] = {
         "sats": 100000000,
         "usd": 100000,

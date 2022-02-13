@@ -11,7 +11,7 @@ from app.core.wallets.wallets_interactor import (
 from app.infra.fastapi.exception_handler import HttpExceptionHandler
 from app.infra.in_memory.user_in_memory import UserInMemoryRepository
 from app.infra.in_memory.wallet_repository import InMemoryWalletRepository
-from app.infra.rateapi.coingecko import CoinGeckoApi
+from app.infra.in_memory.rate_getter_in_memory import RateGetterInMemory
 
 
 @pytest.fixture()
@@ -19,7 +19,7 @@ def wallet_interactor() -> WalletsInteractor:
     return WalletsInteractor(
         user_repo=UserInMemoryRepository(),
         wallet_repo=InMemoryWalletRepository(),
-        rate_getter=CoinGeckoApi(),
+        rate_getter=RateGetterInMemory(),
         exception_handler=HttpExceptionHandler(),
     )
 
