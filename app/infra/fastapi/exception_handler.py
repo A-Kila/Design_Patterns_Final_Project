@@ -3,6 +3,12 @@ from fastapi import HTTPException, status
 
 class HttpExceptionHandler:
     @property
+    def invalid_api_key(self) -> Exception:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Permission Denied"
+        )
+
+    @property
     def user_access_denied(self) -> Exception:
         return HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Access Denied"

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from starlette.requests import Request
 
 from app.core.facade import CreateTransactionRequest, UsersResponse, WalletService
@@ -29,9 +29,7 @@ def check_api_key(request: Request, api_key: str) -> None:
     core: WalletService = get_core(request)
 
     if not core.is_user_registered(api_key):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Permission Denied"
-        )
+        request.app.state.exception_handler.invalid_api_key()
 
 
 @wallet_api.post("/users")
