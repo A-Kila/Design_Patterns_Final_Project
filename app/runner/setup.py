@@ -4,7 +4,7 @@ from app.core.facade import WalletService
 from app.infra.connection.database import Database
 from app.infra.fastapi.api import wallet_api
 from app.infra.fastapi.exception_handler import HttpExceptionHandler
-from app.infra.in_memory.rate_getter_in_memory import CoinGeckoApi
+from app.infra.rateapi.coingecko import CoinGeckoApi
 from app.infra.sqlite.transaction_sqlite_repository import TransactionSqliteRepository
 from app.infra.sqlite.user_sqlite_repository import UserSqliteRepository
 from app.infra.sqlite.wallet_sqlite_repository import WalletSqliteRepository
